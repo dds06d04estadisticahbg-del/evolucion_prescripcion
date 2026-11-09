@@ -57,6 +57,9 @@
             height: 100%;
             min-height: 950px;
             outline: none;
+            text-align: left; /* Explicit Left Alignment */
+            white-space: pre-wrap; /* Multiline support */
+            overflow-y: auto; /* Text scroll for long entries */
             background: repeating-linear-gradient(
                 transparent,
                 transparent 23px,
@@ -67,8 +70,19 @@
             font-family: monospace;
         }
 
-        /* Hide buttons during print */
+        /* Strict A4 Print Page Setup */
+        @page {
+            size: A4 portrait;
+            margin: 5mm;
+        }
+
         @media print {
+            html, body {
+                width: 210mm;
+                height: 297mm;
+                margin: 0;
+                padding: 0;
+            }
             .no-print {
                 display: none !important;
             }
@@ -82,6 +96,7 @@
                 width: 100% !important;
                 max-width: 100% !important;
                 border: none !important;
+                padding: 0 !important;
             }
             .grid-textarea {
                 background: repeating-linear-gradient(
@@ -89,6 +104,7 @@
                     transparent 23px,
                     #94a3b8 24px
                 ) !important;
+                overflow: hidden !important;
             }
         }
     </style>
@@ -233,13 +249,13 @@
                             <input type="time" id="t1-hora" class="w-full text-center text-[11px] font-bold text-gray-800 bg-white focus:bg-yellow-50 outline-none border-b border-gray-300 py-0.5 cursor-pointer">
                         </td>
                         <td class="align-top border-r border-gray-400 p-1">
-                            <textarea id="t1-evolucion-1" oninput="validarMayusculas(this)" placeholder="Escriba las notas de evolución..." class="grid-textarea focus:bg-yellow-50/30 p-1 !min-h-[920px]"></textarea>
+                            <textarea id="t1-evolucion-1" spellcheck="true" lang="es" oninput="validarMayusculas(this)" placeholder="Escriba las notas de evolución..." class="grid-textarea focus:bg-yellow-50/30 p-1 !min-h-[920px]"></textarea>
                         </td>
                         <td class="align-top p-1">
-                            <textarea id="t1-prescripcion-1" oninput="validarMayusculas(this)" placeholder="Escriba la farmacoterapia e indicaciones..." class="grid-textarea focus:bg-yellow-50/30 p-1 !min-h-[920px]"></textarea>
+                            <textarea id="t1-prescripcion-1" spellcheck="true" lang="es" oninput="validarMayusculas(this)" placeholder="Escriba la farmacoterapia e indicaciones..." class="grid-textarea focus:bg-yellow-50/30 p-1 !min-h-[920px]"></textarea>
                         </td>
                         <td class="align-top p-1">
-                            <textarea id="t1-administracion-1" oninput="validarMayusculas(this)" class="grid-textarea focus:bg-yellow-50/30 p-1 text-red-600 font-semibold !min-h-[920px]"></textarea>
+                            <textarea id="t1-administracion-1" spellcheck="true" lang="es" oninput="validarMayusculas(this)" class="grid-textarea focus:bg-yellow-50/30 p-1 text-red-600 font-semibold !min-h-[920px]"></textarea>
                         </td>
                     </tr>
                 </tbody>
@@ -326,13 +342,13 @@
                             <input type="time" id="t2-hora" class="w-full text-center text-[11px] font-bold text-gray-800 bg-white focus:bg-yellow-50 outline-none border-b border-gray-300 py-0.5 cursor-pointer">
                         </td>
                         <td class="align-top border-r border-gray-400 p-1">
-                            <textarea id="t2-evolucion-1" oninput="validarMayusculas(this)" placeholder="Escriba las notas de evolución..." class="grid-textarea focus:bg-yellow-50/30 p-1 !min-h-[920px]"></textarea>
+                            <textarea id="t2-evolucion-1" spellcheck="true" lang="es" oninput="validarMayusculas(this)" placeholder="Escriba las notas de evolución..." class="grid-textarea focus:bg-yellow-50/30 p-1 !min-h-[920px]"></textarea>
                         </td>
                         <td class="align-top p-1">
-                            <textarea id="t2-prescripcion-1" oninput="validarMayusculas(this)" placeholder="Escriba la farmacoterapia e indicaciones..." class="grid-textarea focus:bg-yellow-50/30 p-1 !min-h-[920px]"></textarea>
+                            <textarea id="t2-prescripcion-1" spellcheck="true" lang="es" oninput="validarMayusculas(this)" placeholder="Escriba la farmacoterapia e indicaciones..." class="grid-textarea focus:bg-yellow-50/30 p-1 !min-h-[920px]"></textarea>
                         </td>
                         <td class="align-top p-1">
-                            <textarea id="t2-administracion-1" oninput="validarMayusculas(this)" class="grid-textarea focus:bg-yellow-50/30 p-1 text-red-600 font-semibold !min-h-[920px]"></textarea>
+                            <textarea id="t2-administracion-1" spellcheck="true" lang="es" oninput="validarMayusculas(this)" class="grid-textarea focus:bg-yellow-50/30 p-1 text-red-600 font-semibold !min-h-[920px]"></textarea>
                         </td>
                     </tr>
                 </tbody>
@@ -553,14 +569,14 @@
             window.print();
         }
 
-        // Auto Download PDF
+        // Auto Download PDF with Strict A4 Settings
         function descargarPDF() {
             const element = document.getElementById('form-container');
             const opt = {
-                margin:       [5, 5, 5, 5],
+                margin:       [3, 3, 3, 3],
                 filename:     `Formulario_005_MSP_Pestaña_${currentTab}.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true },
+                html2canvas:  { scale: 2, useCORS: true, scrollY: 0 },
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
