@@ -371,10 +371,22 @@
             <div class="mt-4 space-y-4">
                 <div>
                     <label class="block text-xs font-bold text-gray-700 mb-1">TIPO DE DISPOSITIVO / FIRMA</label>
-                    <select id="tipo-firma" class="w-full text-xs p-2 border border-gray-300 rounded focus:ring-2 focus:ring-indigo-500 outline-none">
+                    <select id="tipo-firma" onchange="toggleTipoFirma(this.value)" class="w-full text-xs p-2 border border-gray-300 rounded focus:ring-2 focus:ring-indigo-500 outline-none font-semibold">
                         <option value="token">Token USB / Tarjeta Inteligente (PKCS#11)</option>
                         <option value="archivo">Archivo Certificado (.p12 / .pfx)</option>
                     </select>
+                </div>
+
+                <!-- Campo para subir archivo de firma (.p12 / .pfx) -->
+                <div id="contenedor-archivo-firma" class="hidden">
+                    <label class="block text-xs font-bold text-gray-700 mb-1">SELECCIONAR ARCHIVO DE FIRMA (.P12 / .PFX)</label>
+                    <div class="flex items-center gap-2">
+                        <label class="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-gray-50 border border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-100 transition text-xs font-medium text-gray-600">
+                            <i class="fa-solid fa-file-contract text-amber-600 text-sm"></i>
+                            <span id="archivo-firma-nombre">Buscar archivo...</span>
+                            <input type="file" id="archivo-firma-input" accept=".p12,.pfx" onchange="actualizarNombreArchivoFirma(this)" class="hidden">
+                        </label>
+                    </div>
                 </div>
 
                 <div>
@@ -383,12 +395,12 @@
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-gray-700 mb-1">PIN DE SEGURIDAD / CONTRASEÑA</label>
+                    <label class="block text-xs font-bold text-gray-700 mb-1">PIN DE SEGURIDAD / CONTRASEÑA DE ARCHIVO</label>
                     <input type="password" id="pin-firmante-input" placeholder="••••••••" class="w-full text-xs p-2 border border-gray-300 rounded focus:ring-2 focus:ring-indigo-500 outline-none">
                 </div>
 
                 <div class="p-3 bg-amber-50 border border-amber-200 rounded text-[11px] text-amber-800">
-                    <i class="fa-solid fa-circle-info mr-1"></i> Asegúrese de tener conectado su token USB o su certificado válido antes de proceder.
+                    <i class="fa-solid fa-circle-info mr-1"></i> <span id="info-firma-txt">Asegúrese de tener conectado su token USB antes de proceder.</span>
                 </div>
             </div>
 
@@ -402,6 +414,7 @@
     <!-- JAVASCRIPT LOGIC -->
     <script>
         let currentTab = 1;
+        let certificadoCargado = null;
 
         // Synchronize initial dates & times on window load
         window.addEventListener('DOMContentLoaded', () => {
@@ -563,12 +576,43 @@
             document.getElementById('modal-firma').classList.add('hidden');
         }
 
+        function toggleTipoFirma(tipo) {
+            const contArchivo = document.getElementById('contenedor-archivo-firma');
+            const infoTxt = document.getElementById('info-firma-txt');
+            if (tipo === 'archivo') {
+                contArchivo.classList.remove('hidden');
+                infoTxt.textContent = "Seleccione el archivo .p12 o .pfx de su firma digital e ingrese la contraseña correspondiente.";
+            } else {
+                contArchivo.classList.add('hidden');
+                infoTxt.textContent = "Asegúrese de tener conectado su token USB antes de proceder.";
+            }
+        }
+
+        function actualizarNombreArchivoFirma(input) {
+            const lbl = document.getElementById('archivo-firma-nombre');
+            if (input.files && input.files[0]) {
+                certificadoCargado = input.files[0];
+                lbl.textContent = certificadoCargado.name;
+                lbl.classList.add('font-bold', 'text-amber-700');
+            } else {
+                certificadoCargado = null;
+                lbl.textContent = "Buscar archivo...";
+                lbl.classList.remove('font-bold', 'text-amber-700');
+            }
+        }
+
         function procesarFirma() {
+            const tipo = document.getElementById('tipo-firma').value;
             const nombre = document.getElementById('nombre-firmante-input').value.trim();
             const pin = document.getElementById('pin-firmante-input').value.trim();
 
+            if (tipo === 'archivo' && !certificadoCargado) {
+                mostrarError("Por favor seleccione un archivo certificado (.p12 o .pfx).");
+                return;
+            }
+
             if (!nombre || !pin) {
-                mostrarError("Por favor ingrese el Nombre del firmante y el PIN de seguridad.");
+                mostrarError("Por favor ingrese el Nombre del firmante y la clave/PIN de seguridad.");
                 return;
             }
 
@@ -578,8 +622,9 @@
             const firmanteFecha = document.getElementById(`${activePrefix}-firmante-fecha`);
 
             if (firmaBox && firmanteNombre && firmanteFecha) {
+                const origenTxt = tipo === 'archivo' ? `Archivo (${certificadoCargado.name})` : 'Security Token USB (PKCS#11)';
                 firmanteNombre.textContent = nombre.toUpperCase();
-                firmanteFecha.textContent = new Date().toLocaleString('es-EC');
+                firmanteFecha.textContent = `${new Date().toLocaleString('es-EC')} | Certificado: ${origenTxt}`;
                 firmaBox.classList.remove('hidden');
             }
 
