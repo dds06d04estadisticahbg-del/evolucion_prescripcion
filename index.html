@@ -3,649 +3,850 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulario 005 - Evolución y Prescripciones - MSP</title>
+    <title>EVOLUCIÓN Y PRESCRIPCIÓN - MSP</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- html2pdf.js -->
+    <!-- html2pdf.js para exportar PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
-        
+        /* Estilos generales */
         body {
             font-family: 'Roboto', sans-serif;
-            background-color: #f3f4f6;
-            color: #1f2937;
+            background-color: #f1f5f9;
         }
 
-        /* Form Table Borders matching official MSP Form 005 */
+        /* Estilo de la tabla e insumos MSP */
         .msp-table {
             border-collapse: collapse;
             width: 100%;
+            background-color: white;
         }
+
         .msp-table th, .msp-table td {
             border: 1px solid #1e293b;
             padding: 2px 4px;
             font-size: 11px;
         }
+
         .msp-header-bg {
-            background-color: #c7d2fe; /* Light purple/blue standard header */
+            background-color: #c7d2fe; /* Azul violeta claro pastel según formulario original */
+            color: #0f172a;
+            font-weight: bold;
         }
 
-        /* Auto-uppercase and lined text to simulate writing over form lines */
-        input[type="text"], textarea {
+        .msp-subheader-bg {
+            background-color: #dcfce7; /* Verde menta claro pastel */
+            color: #0f172a;
+            font-weight: bold;
+        }
+
+        /* Transformación a MAYÚSCULAS y Subrayado simulando líneas de cuaderno */
+        .uppercase-underline {
             text-transform: uppercase;
+            text-decoration: underline;
+            text-underline-offset: 4px;
+            text-decoration-thickness: 1px;
+            font-family: 'Roboto Mono', monospace;
+            font-weight: 500;
         }
 
-        .lined-input {
-            border: none;
-            border-bottom: 1px dashed #94a3b8;
-            border-radius: 0;
+        /* Campos de texto / Textareas con líneas graduadas para impresión */
+        .ruled-input {
+            width: 100%;
             background: transparent;
-        }
-        .lined-input:focus {
-            border-bottom: 1.5px solid #4f46e5;
-            background-color: #fefce8;
+            border: none;
+            outline: none;
+            text-transform: uppercase;
+            text-decoration: underline;
+            text-underline-offset: 4px;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 12px;
+            color: #000;
         }
 
-        /* Dynamic row textareas with line effect - Expanded height for large amounts of text */
-        .grid-textarea {
-            resize: vertical;
+        .ruled-textarea {
             width: 100%;
             height: 100%;
-            min-height: 950px;
-            outline: none;
-            text-align: left; /* Explicit Left Alignment */
-            white-space: pre-wrap; /* Multiline support */
-            overflow-y: auto; /* Text scroll for long entries */
+            min-height: 680px;
+            max-height: 720px;
             background: repeating-linear-gradient(
                 transparent,
                 transparent 23px,
-                #cbd5e1 24px
+                #94a3b8 24px
             );
             line-height: 24px;
+            border: none;
+            outline: none;
+            text-transform: uppercase;
+            font-family: 'Roboto Mono', monospace;
             font-size: 12px;
-            font-family: monospace;
+            resize: none;
+            color: #000;
+            padding: 0 4px;
+            overflow: hidden;
         }
 
-        /* Strict A4 Print Page Setup */
-        @page {
-            size: A4 portrait;
-            margin: 5mm;
+        /* Estilos específicos para la hoja A4 */
+        .a4-page {
+            width: 210mm;
+            min-height: 297mm;
+            padding: 8mm;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            position: relative;
+            box-sizing: border-box;
         }
 
+        /* ANVERSO estrictamente a 1 sola hoja A4 */
+        #tab-anverso {
+            height: 297mm;
+            max-height: 297mm;
+            overflow: hidden;
+            page-break-after: avoid;
+            page-break-inside: avoid;
+        }
+
+        /* REVERSO permite múltiples hojas si crece */
+        #tab-reverso {
+            height: auto;
+            min-height: 297mm;
+        }
+
+        /* Configuración para Impresión */
         @media print {
-            html, body {
-                width: 210mm;
-                height: 297mm;
+            @page {
+                size: A4 portrait;
                 margin: 0;
-                padding: 0;
-            }
-            .no-print {
-                display: none !important;
             }
             body {
                 background: white;
                 padding: 0;
+                margin: 0;
             }
-            .print-page {
-                box-shadow: none !important;
+            .no-print {
+                display: none !important;
+            }
+            .a4-page {
+                box-shadow: none;
                 margin: 0 !important;
-                width: 90% !important;
-                max-width: 90% !important;
-                border: none !important;
-                padding: 0 !important;
+                width: 210mm !important;
+                padding: 6mm !important;
             }
-            .grid-textarea {
+
+            /* Forzar ANVERSO a 1 sola página exacta */
+            #tab-anverso {
+                height: 285mm !important;
+                max-height: 285mm !important;
+                page-break-before: avoid !important;
+                page-break-after: avoid !important;
+                page-break-inside: avoid !important;
+                overflow: hidden !important;
+            }
+            #tab-anverso .ruled-textarea {
+                min-height: 580px !important;
+                height: 580px !important;
+                max-height: 580px !important;
                 background: repeating-linear-gradient(
                     transparent,
                     transparent 23px,
-                    #94a3b8 24px
+                    #000000 24px
                 ) !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
                 overflow: hidden !important;
+            }
+
+            /* Permite que REVERSO fluya a varias hojas al imprimir */
+            #tab-reverso {
+                height: auto !important;
+                max-height: none !important;
+                overflow: visible !important;
+                page-break-after: auto !important;
+            }
+            #tab-reverso .ruled-textarea {
+                min-height: 680px !important;
+                height: auto !important;
+                max-height: none !important;
+                background: repeating-linear-gradient(
+                    transparent,
+                    transparent 23px,
+                    #000000 24px
+                ) !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                overflow: visible !important;
+            }
+
+            .msp-header-bg, .msp-subheader-bg {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
             }
         }
     </style>
 </head>
-<body class="p-2 sm:p-6 min-h-screen flex flex-col items-center">
+<body class="min-h-screen pb-12">
 
-    <!-- TOP TOOLBAR / NAVIGATION -->
-    <div class="no-print w-full max-w-5xl bg-white p-4 rounded-xl shadow-md mb-6 border border-gray-200">
-        <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-            
-            <!-- Tabs -->
-            <div class="flex space-x-2 bg-gray-100 p-1.5 rounded-lg w-full md:w-auto">
-                <button id="tab-1-btn" onclick="switchTab(1)" class="flex-1 md:flex-none px-5 py-2.5 rounded-md font-bold text-sm transition-all duration-200 bg-indigo-600 text-white shadow">
-                    <i class="fa-solid fa-file-lines mr-2"></i> ANVERSO (1)
-                </button>
-                <button id="tab-2-btn" onclick="switchTab(2)" class="flex-1 md:flex-none px-5 py-2.5 rounded-md font-bold text-sm transition-all duration-200 text-gray-700 hover:bg-gray-200">
-                    <i class="fa-solid fa-file-circle-plus mr-2"></i> REVERSO (2)
-                </button>
+    <!-- BARRA SUPERIOR DE CONTROL -->
+    <header class="no-print bg-slate-900 text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center space-x-3">
+                <i class="fa-solid fa-file-medical text-cyan-400 text-2xl"></i>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight">HISTORIA CLÍNICA ÚNICA - MSP ECUADOR</h1>
+                    <p class="text-xs text-slate-400">Formulario HCU-form.005/2021 | Guamote</p>
+                </div>
             </div>
 
-            <!-- Control Buttons -->
-            <div class="flex flex-wrap gap-2 w-full md:w-auto justify-end">
-                <button onclick="limpiarFormulario()" class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-medium text-sm transition shadow flex items-center gap-2">
+            <!-- Botones de Acción Solicitados -->
+            <div class="flex items-center gap-2">
+                <!-- Estado de Sincronización Multi-usuario -->
+                <div id="sync-badge" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs bg-slate-800 text-amber-400 border border-slate-700 mr-2">
+                    <i class="fa-solid fa-users text-xs"></i>
+                    <span id="sync-text">Conectando colaborativo...</span>
+                </div>
+
+                <!-- Botón Limpiar -->
+                <button onclick="confirmClearData()" class="px-3.5 py-1.5 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded-lg transition flex items-center gap-2 shadow">
                     <i class="fa-solid fa-trash-can"></i> Limpiar
                 </button>
-                <button onclick="imprimirFormulario()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-sm transition shadow flex items-center gap-2">
-                    <i class="fa-solid fa-print"></i> Imprimir
+
+                <!-- Botón Imprimir A4 -->
+                <button onclick="window.print()" class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg transition flex items-center gap-2 shadow">
+                    <i class="fa-solid fa-print"></i> Imprimir A4
                 </button>
-                <button onclick="descargarPDF()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium text-sm transition shadow flex items-center gap-2">
-                    <i class="fa-solid fa-file-pdf"></i> PDF
-                </button>
-                <button onclick="abrirModalFirma()" class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-medium text-sm transition shadow flex items-center gap-2">
-                    <i class="fa-solid fa-key"></i> Firma Electrónica
+
+                <!-- Botón Descargar PDF A4 -->
+                <button onclick="downloadPDF()" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-lg transition flex items-center gap-2 shadow">
+                    <i class="fa-solid fa-file-pdf"></i> Descargar PDF
                 </button>
             </div>
-
         </div>
 
-        <!-- Alert Banner -->
-        <div id="error-banner" class="hidden mt-3 p-3 bg-red-100 border-l-4 border-red-500 text-red-700 text-xs sm:text-sm rounded font-medium">
-            <i class="fa-solid fa-triangle-exclamation mr-1"></i> <span id="error-message"></span>
+        <!-- PESTAÑAS ANVERSO Y REVERSO -->
+        <div class="bg-slate-800 border-t border-slate-700">
+            <div class="max-w-7xl mx-auto flex">
+                <button id="tab-anverso-btn" onclick="switchTab('anverso')" class="px-6 py-2.5 font-bold text-sm border-b-2 border-cyan-400 text-cyan-400 bg-slate-900/50 flex items-center gap-2">
+                    <i class="fa-regular fa-copy"></i> 1. ANVERSO (EVOLUCIÓN Y PRESCRIPCIÓN 1)
+                </button>
+                <button id="tab-reverso-btn" onclick="switchTab('reverso')" class="px-6 py-2.5 font-semibold text-sm text-slate-400 hover:text-white border-b-2 border-transparent hover:border-slate-500 flex items-center gap-2">
+                    <i class="fa-regular fa-file"></i> 2. REVERSO (EVOLUCIÓN Y PRESCRIPCIÓN 2)
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MENSAJE DE ERROR / NOTIFICACIONES MODAL CUSTOM -->
+    <div id="error-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 no-print">
+        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 text-center border-t-4 border-red-500">
+            <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4 text-red-600">
+                <i class="fa-solid fa-triangle-exclamation text-xl"></i>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900 mb-2" id="modal-title">ERROR DE VALIDACIÓN</h3>
+            <p class="text-sm text-slate-600 mb-6" id="modal-message">Descripción del error.</p>
+            <button onclick="closeModal()" class="px-5 py-2 bg-red-600 text-white text-sm font-bold rounded-lg hover:bg-red-700 transition">
+                Entendido
+            </button>
         </div>
     </div>
 
-    <!-- FORM CONTAINER PRINT AREA -->
-    <div id="form-container" class="w-full max-w-5xl bg-white p-4 rounded-xl shadow-xl border border-gray-300 print-page">
-        
-        <!-- ========================================== -->
-        <!-- TAB 1: ANVERSO -->
-        <!-- ========================================== -->
-        <div id="tab-1" class="tab-content">
-            <!-- SECTION A: DATOS DEL ESTABLECIMIENTO Y USUARIO / PACIENTE -->
+    <!-- CONTENEDOR PRINCIPAL DE HOJAS -->
+    <main class="py-6 flex justify-center">
+
+        <!-- ========================================================================= -->
+        <!-- PESTAÑA 1: ANVERSO -->
+        <!-- ========================================================================= -->
+        <div id="tab-anverso" class="a4-page border border-slate-300">
+            <!-- TITULO SECCION A -->
             <table class="msp-table mb-1">
                 <thead>
                     <tr class="msp-header-bg">
-                        <th colspan="6" class="text-left font-extrabold uppercase py-1 px-2 text-xs">A. DATOS DEL ESTABLECIMIENTO Y USUARIO / PACIENTE</th>
-                    </tr>
-                    <tr class="bg-gray-100 text-center font-bold">
-                        <td class="w-2/12">INSTITUCIÓN DEL SISTEMA</td>
-                        <td class="w-1/12">UNICÓDIGO</td>
-                        <td class="w-2/12">ESTABLECIMIENTO DE SALUD</td>
-                        <td class="w-2/12">NÚMERO DE HISTORIA CLÍNICA ÚNICA</td>
-                        <td class="w-1/12">NÚMERO DE ARCHIVO</td>
-                        <td class="w-1/12">No. HOJA</td>
+                        <th colspan="12" class="text-left text-xs uppercase px-2 py-1">A. DATOS DEL ESTABLECIMIENTO Y USUARIO / PACIENTE</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <!-- Non editable values -->
-                        <td><input type="text" value="MINISTERIO DE SALUD PÚBLICA" readonly class="w-full bg-gray-100 font-semibold text-center cursor-not-allowed outline-none text-xs"></td>
-                        <td><input type="text" value="000473" readonly class="w-full bg-gray-100 font-semibold text-center cursor-not-allowed outline-none text-xs"></td>
-                        <td><input type="text" value="HOSPITAL BÁSICO DE GUAMOTE" readonly class="w-full bg-gray-100 font-semibold text-center cursor-not-allowed outline-none text-xs"></td>
-                        
-                        <!-- Editable fields -->
-                        <td><input type="text" id="t1-hcu" onblur="validarHCU(this)" oninput="validarMayusculas(this)" placeholder="Cédula (10) o 17 caracteres" class="w-full text-center outline-none bg-white focus:bg-yellow-50 text-xs font-semibold"></td>
-                        <td><input type="text" id="t1-archivo" maxlength="6" oninput="validarArchivoSeisDigitos(this)" placeholder="000000" class="w-full text-center outline-none bg-white focus:bg-yellow-50 text-xs font-mono font-bold"></td>
-                        <td><input type="text" id="t1-hoja" oninput="validarSoloNumeros(this)" class="w-full text-center outline-none bg-white focus:bg-yellow-50 text-xs font-bold"></td>
+                    <!-- Fila 1 Cabeza -->
+                    <tr class="msp-subheader-bg text-center text-[10px]">
+                        <td class="w-1/6">INSTITUCIÓN DEL SISTEMA</td>
+                        <td class="w-1/12">UNICÓDIGO</td>
+                        <td class="w-1/4">ESTABLECIMIENTO DE SALUD</td>
+                        <td class="w-1/4">NÚMERO DE HISTORIA CLÍNICA ÚNICA</td>
+                        <td class="w-1/6">NÚMERO DE ARCHIVO</td>
+                        <td class="w-1/12">No. HOJA</td>
+                    </tr>
+                    <tr class="text-center font-bold">
+                        <!-- 7) INSTITUCIÓN DEL SISTEMA = MINISTERIO DE SALUD PÚBLICA (no editable) -->
+                        <td class="bg-slate-100 text-slate-800 text-[10px]">MINISTERIO DE SALUD PÚBLICA</td>
+                        <!-- 7) UNICÓDIGO = 000473 (no editable) -->
+                        <td class="bg-slate-100 text-slate-800 text-[11px]">000473</td>
+                        <!-- 8) ESTABLECIMIENTO DE SALUD = HOSPITAL BÁSICO DE GUAMOTE (no editable) -->
+                        <td class="bg-slate-100 text-slate-800 text-[10px]">HOSPITAL BÁSICO DE GUAMOTE</td>
+                        <!-- 9) NÚMERO DE HISTORIA CLÍNICA ÚNICA: Cédula o 17 caracteres -->
+                        <td>
+                            <input type="text" id="anverso_hcu" onblur="validateHCU(this)" class="ruled-input text-center text-xs font-bold" placeholder="Cédula (10) / 17 caract." maxlength="17">
+                        </td>
+                        <!-- 10) NÚMERO DE ARCHIVO: 6 dígitos permitiendo ceros al inicio -->
+                        <td>
+                            <input type="text" id="anverso_archivo" onblur="validateArchivo(this)" class="ruled-input text-center text-xs font-bold" placeholder="000000" maxlength="6">
+                        </td>
+                        <!-- 11) No. HOJA: Solo numérico -->
+                        <td>
+                            <input type="text" id="anverso_no_hoja" onblur="validateNumeric(this)" class="ruled-input text-center text-xs font-bold" placeholder="1" maxlength="4">
+                        </td>
                     </tr>
                 </tbody>
             </table>
 
+            <!-- Fila 2 Paciente -->
             <table class="msp-table mb-2">
-                <thead>
-                    <tr class="bg-gray-100 text-center font-bold">
+                <tbody>
+                    <tr class="msp-subheader-bg text-center text-[10px]">
                         <td class="w-1/5">PRIMER APELLIDO</td>
                         <td class="w-1/5">SEGUNDO APELLIDO</td>
                         <td class="w-1/5">PRIMER NOMBRE</td>
                         <td class="w-1/5">SEGUNDO NOMBRE</td>
-                        <td class="w-10">SEXO</td>
-                        <td class="w-12">EDAD</td>
-                        <td class="w-35" colspan="4">CONDICIÓN EDAD <br><span class="text-[9px] font-normal">(MARCAR H / D / M / A)</span></td>
+                        <td class="w-1/12">SEXO</td>
+                        <td class="w-1/12">EDAD</td>
+                        <td class="w-1/6">CONDICIÓN EDAD (MARCAR)<br>
+                            <span class="inline-flex gap-2 font-normal text-[9px]">
+                                <span>H</span><span>D</span><span>M</span><span>A</span>
+                            </span>
+                        </td>
                     </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><input type="text" id="t1-apellido1" oninput="validarMayusculas(this)" class="w-full outline-none bg-white focus:bg-yellow-50 px-1 text-xs"></td>
-                        <td><input type="text" id="t1-apellido2" oninput="validarMayusculas(this)" class="w-full outline-none bg-white focus:bg-yellow-50 px-1 text-xs"></td>
-                        <td><input type="text" id="t1-nombre1" oninput="validarMayusculas(this)" class="w-full outline-none bg-white focus:bg-yellow-50 px-1 text-xs"></td>
-                        <td><input type="text" id="t1-nombre2" oninput="validarMayusculas(this)" class="w-full outline-none bg-white focus:bg-yellow-50 px-1 text-xs"></td>
-                        <td><input type="text" id="t1-sexo" maxlength="1" oninput="validarSexo(this)" placeholder="M/F" class="w-full text-center font-bold outline-none bg-white focus:bg-yellow-50 text-xs"></td>
-                        <td><input type="text" id="t1-edad" oninput="validarSoloNumeros(this)" class="w-full text-center outline-none bg-white focus:bg-yellow-50 text-xs font-bold"></td>
-                        
-                        <!-- Condicion Edad Checkboxes / 4 Inputs: H, D, M, A -->
-                        <td class="text-center w-7"><input type="text" id="t1-cond-h" maxlength="1" oninput="validarMarcaCondicion(this)" class="w-full text-center outline-none uppercase font-bold text-xs" placeholder="H"></td>
-                        <td class="text-center w-7"><input type="text" id="t1-cond-d" maxlength="1" oninput="validarMarcaCondicion(this)" class="w-full text-center outline-none uppercase font-bold text-xs" placeholder="D"></td>
-                        <td class="text-center w-7"><input type="text" id="t1-cond-m" maxlength="1" oninput="validarMarcaCondicion(this)" class="w-full text-center outline-none uppercase font-bold text-xs" placeholder="M"></td>
-                        <td class="text-center w-7"><input type="text" id="t1-cond-a" maxlength="1" oninput="validarMarcaCondicion(this)" class="w-full text-center outline-none uppercase font-bold text-xs" placeholder="A"></td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <!-- SECTION B: EVOLUCIÓN Y PRESCRIPCIONES TAB 1 -->
+                    <tr class="text-center">
+                        <td><input type="text" id="anverso_p_apellido" class="ruled-input text-center" oninput="forceUpper(this)"></td>
+                        <td><input type="text" id="anverso_s_apellido" class="ruled-input text-center" oninput="forceUpper(this)"></td>
+                        <td><input type="text" id="anverso_p_nombre" class="ruled-input text-center" oninput="forceUpper(this)"></td>
+                        <td><input type="text" id="anverso_s_nombre" class="ruled-input text-center" oninput="forceUpper(this)"></td>
+                        <!-- 12) SEXO: M o F -->
+                        <td>
+                            <input type="text" id="anverso_sexo" onblur="validateSexo(this)" class="ruled-input text-center font-bold" placeholder="M/F" maxlength="1">
+                        </td>
+                        <!-- 11) EDAD: solo numérico -->
+                        <td>
+                            <input type="text" id="anverso_edad" onblur="validateNumeric(this)" class="ruled-input text-center font-bold" placeholder="0" maxlength="3">
+                        </td>
+                        <!-- 13) CONDICIÓN EDAD: 4 casilleros H, D, M, A -->
+                        <td>
+                            <div class="flex justify-around items-center py-1">
+                                <label class="text-[9px] cursor-pointer flex flex-col items-center">
+                                    <input type="radio" name="condicion_edad_anverso" value="H" class="w-3.5 h-3.5 accent-indigo-600">
+                                    <span class="font-bold">H</span>
+                                </label>
+                                <label class="text-[9px] cursor-pointer flex flex-col items-center">
+                                    <input type="radio" name="condicion_edad_anverso" value="D" class="w-3.5 h-3.5 accent-indigo-600">
+                                    <span class="font-bold">D</span>
+                                </label>
+                                <label class="text-[9px] cursor-pointer flex flex-col items-center">
+                                    <input type="radio" name="condicion_edad_anverso" value="M" class="w-3.5 h-3.5 accent-indigo-600">
+                                    <span class="font-bold">M</span>
+                                </label>
+                                <label class="text-[9px] cursor-pointer flex flex-col items-center">
+                                    <input type="radio" name="condicion_edad_anverso" value="A" class="w-3.5 h-3.5 accent-indigo-600">
+                                    <span class="font-bold">A</span>
+                                </label>
+                            </div>
+                        </td>
+            <!-- SECCIÓN B. EVOLUCIÓN Y PRESCRIPCIÓN ES (ANVERSO) -->
             <table class="msp-table">
                 <thead>
                     <tr class="msp-header-bg">
-                        <th colspan="5" class="text-left font-extrabold py-1 px-2 text-xs">B. EVOLUCIÓN Y PRESCRIPCIONES</th>
+                        <th colspan="6" class="text-left text-xs uppercase px-2 py-1">B. EVOLUCIÓN Y PRESCRIPCIONES</th>
                     </tr>
-                    <tr class="bg-gray-100 text-center font-bold border-b border-gray-400">
-                        <th colspan="3" class="w-2/3 py-1 text-sm border-r border-gray-400">
+                    <tr class="msp-subheader-bg text-center text-[10px]">
+                        <th colspan="3" class="w-1/2 py-1">
                             1. EVOLUCIÓN
-                            <div class="text-[8px] font-normal text-gray-700 uppercase tracking-tight">FIRMAR AL PIE DE CADA EVOLUCIÓN Y PRESCRIPCIÓN</div>
+                            <div class="text-[8px] font-normal normal-case text-slate-700 tracking-tight">FIRMAR AL PIE DE CADA EVOLUCIÓN Y PRESCRIPCIÓN</div>
                         </th>
-                        <th colspan="2" class="w-1/3 py-1 text-sm">
+                        <th colspan="3" class="w-1/2 py-1">
                             2. PRESCRIPCIONES
-                            <div class="text-[8px] font-semibold text-red-600 uppercase tracking-tight">REGISTRAR CON ROJO LA ADMINISTRACIÓN DE FÁRMACOS Y COLOCACIÓN DE DISPOSITIVOS MÉDICOS</div>
+                            <div class="text-[7.5px] font-bold normal-case text-red-600 tracking-tight">REGISTRAR CON ROJO LA ADMINISTRACIÓN DE FÁRMACOS Y COLOCACIÓN DE DISPOSITIVOS MÉDICOS</div>
                         </th>
                     </tr>
-                    <tr class="bg-gray-50 text-center text-[10px] font-bold">
-                        <td class="w-1/12">FECHA<br><span class="font-normal text-[8px]">(aaaa-mm-dd)</span></td>
-                        <td class="w-1/12">HORA<br><span class="font-normal text-[8px]">(hh:mm)</span></td>
-                        <td class="border-r border-gray-400">NOTAS DE EVOLUCIÓN</td>
-                        <td class="w-3/4">FARMACOTERAPIA E INDICACIONES<br><span class="font-normal text-[8px]">(Para enfermería y otro profesional de salud)</span></td>
-                        <td class="w-16 text-[9px]">ADMINISTR. FÁRMACOS DISPOSITIVO</td>
+                    <tr class="bg-slate-100 text-[9px] text-center">
+                        <th class="w-[65px]">FECHA<br><span class="font-normal text-[8px]">(aaaa-mm-dd)</span></th>
+                        <th class="w-[50px]">HORA<br><span class="font-normal text-[8px]">(hh:mm)</span></th>
+                        <th>NOTAS DE EVOLUCIÓN</th>
+                        <th class="w-[50%]">FARMACOTERAPIA E INDICACIONES<br><span class="font-normal text-[8px]">(Para enfermería y otro profesional de salud)</span></th>
+                        <th class="w-[65px] text-[7.5px]">ADMINISTR. FÁRMACOS DISPOSITIVO</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="align-top bg-white p-1 w-20">
-                            <input type="date" id="t1-fecha" class="w-full text-center text-[11px] font-bold text-gray-800 bg-white focus:bg-yellow-50 outline-none border-b border-gray-300 py-0.5 cursor-pointer">
-                        </td>
-                        <td class="align-top bg-white p-1 w-16">
-                            <input type="time" id="t1-hora" class="w-full text-center text-[11px] font-bold text-gray-800 bg-white focus:bg-yellow-50 outline-none border-b border-gray-300 py-0.5 cursor-pointer">
-                        </td>
-                        <td class="align-top border-r border-gray-400 p-1">
-                            <textarea id="t1-evolucion-1" spellcheck="true" lang="es" oninput="validarMayusculas(this)" placeholder="Escriba las notas de evolución..." class="grid-textarea focus:bg-yellow-50/30 p-1 !min-h-[920px]"></textarea>
-                        </td>
+                        <!-- 6) Fecha editable calendario -->
                         <td class="align-top p-1">
-                            <textarea id="t1-prescripcion-1" spellcheck="true" lang="es" oninput="validarMayusculas(this)" placeholder="Escriba la farmacoterapia e indicaciones..." class="grid-textarea focus:bg-yellow-50/30 p-1 !min-h-[920px]"></textarea>
+                            <input type="date" id="anverso_fecha" class="w-full text-[10px] font-mono border-none outline-none uppercase bg-transparent">
                         </td>
+                        <!-- 6) Hora editable -->
                         <td class="align-top p-1">
-                            <textarea id="t1-administracion-1" spellcheck="true" lang="es" oninput="validarMayusculas(this)" class="grid-textarea focus:bg-yellow-50/30 p-1 text-red-600 font-semibold !min-h-[920px]"></textarea>
+                            <input type="time" id="anverso_hora" class="w-full text-[10px] font-mono border-none outline-none uppercase bg-transparent">
+                        </td>
+                        <!-- 5) Notas de Evolución: Mayúsculas y subrayado simulando renglones -->
+                        <td class="align-top p-0">
+                            <textarea id="anverso_notas" class="ruled-textarea" oninput="forceUpper(this)" placeholder="Escriba la nota de evolución aquí..."></textarea>
+                        </td>
+                        <!-- Prescripciones -->
+                        <td class="align-top p-0">
+                            <textarea id="anverso_prescripciones" class="ruled-textarea" oninput="forceUpper(this)" placeholder="Escriba las indicaciones y farmacoterapia aquí..."></textarea>
+                        </td>
+                        <!-- Registro de Administración -->
+                        <td class="align-top p-0">
+                            <textarea id="anverso_administracion" class="ruled-textarea text-red-600 font-bold" oninput="forceUpper(this)" placeholder="Reg. rojo..."></textarea>
                         </td>
                     </tr>
                 </tbody>
             </table>
 
-            <!-- Digital Signature Placeholder / Info Box -->
-            <div id="t1-firma-box" class="hidden mt-2 p-2 border border-emerald-500 bg-emerald-50 rounded flex items-center justify-between text-xs">
-                <div class="flex items-center gap-2">
-                    <i class="fa-solid fa-signature text-emerald-600 text-lg"></i>
-                    <div>
-                        <p class="font-bold text-emerald-800">FIRMADO ELECTRÓNICAMENTE POR: <span id="t1-firmante-nombre">MEDICO AUTORIZADO</span></p>
-                        <p class="text-gray-600 text-[10px]">Fecha de emisión: <span id="t1-firmante-fecha"></span> | Certificado Válido (Security Token / PKCS#12)</p>
-                    </div>
-                </div>
-                <span class="text-emerald-700 font-mono text-[10px] bg-emerald-200 px-2 py-0.5 rounded font-bold">VÁLIDO</span>
-            </div>
-
-            <!-- Footer -->
-            <div class="flex justify-between items-center mt-3 text-[10px] text-gray-700 font-bold">
-                <span>SNS-MSP / HCU-form.005/2021</span>
-                <span class="text-xs font-black">EVOLUCIÓN Y PRESCRIPCIONES (1)</span>
+            <!-- Pie de Hoja Anverso -->
+            <div class="mt-2 flex justify-between items-center text-[9px] text-slate-700 font-mono">
+                <div>SNS-MSP / HCU-form.005/2021</div>
+                <div class="font-bold">EVOLUCIÓN Y PRESCRIPCIONES (1)</div>
             </div>
         </div>
 
-        <!-- ========================================== -->
-        <!-- TAB 2: REVERSO -->
-        <!-- ========================================== -->
-        <div id="tab-2" class="tab-content hidden">
-            <!-- SECTION A: DATOS DEL USUARIO / PACIENTE (REVERSO) -->
+
+        <!-- ========================================================================= -->
+        <!-- PESTAÑA 2: REVERSO -->
+        <!-- ========================================================================= -->
+        <div id="tab-reverso" class="a4-page border border-slate-300 hidden">
+            <!-- TITULO SECCION A (REVERSO) -->
             <table class="msp-table mb-2">
                 <thead>
                     <tr class="msp-header-bg">
-                        <th colspan="5" class="text-left font-extrabold uppercase py-1 px-2 text-xs">A. DATOS DEL USUARIO / PACIENTE</th>
-                    </tr>
-                    <tr class="bg-gray-100 text-center font-bold">
-                        <td class="w-3/12">PRIMER APELLIDO</td>
-                        <td class="w-3/12">PRIMER NOMBRE</td>
-                        <td class="w-1/12">EDAD</td>
-                        <td class="w-4/12">NÚMERO DE HISTORIA CLÍNICA ÚNICA</td>
-                        <td class="w-5/12">NÚMERO DE ARCHIVO</td>
+                        <th colspan="5" class="text-left text-xs uppercase px-2 py-1">A. DATOS DEL USUARIO / PACIENTE</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td><input type="text" id="t2-apellido1" oninput="validarMayusculas(this)" class="w-full outline-none bg-white focus:bg-yellow-50 px-1 text-xs"></td>
-                        <td><input type="text" id="t2-nombre1" oninput="validarMayusculas(this)" class="w-full outline-none bg-white focus:bg-yellow-50 px-1 text-xs"></td>
-                        <td><input type="text" id="t2-edad" oninput="validarSoloNumeros(this)" class="w-full text-center outline-none bg-white focus:bg-yellow-50 text-xs font-bold"></td>
-                        <td><input type="text" id="t2-hcu" onblur="validarHCU(this)" oninput="validarMayusculas(this)" placeholder="Cédula (10) o 17 caracteres" class="w-full text-center outline-none bg-white focus:bg-yellow-50 text-xs font-semibold"></td>
-                        <td><input type="text" id="t2-archivo" maxlength="6" oninput="validarArchivoSeisDigitos(this)" placeholder="000000" class="w-full text-center outline-none bg-white focus:bg-yellow-50 text-xs font-mono font-bold"></td>
+                    <tr class="msp-subheader-bg text-center text-[10px]">
+                        <td class="w-1/4">PRIMER APELLIDO</td>
+                        <td class="w-1/4">PRIMER NOMBRE</td>
+                        <td class="w-1/12">EDAD</td>
+                        <td class="w-1/3">NÚMERO DE HISTORIA CLÍNICA ÚNICA</td>
+                        <td class="w-1/6">NÚMERO DE ARCHIVO</td>
+                    </tr>
+                    <tr class="text-center">
+                        <td><input type="text" id="reverso_p_apellido" class="ruled-input text-center" oninput="forceUpper(this)"></td>
+                        <td><input type="text" id="reverso_p_nombre" class="ruled-input text-center" oninput="forceUpper(this)"></td>
+                        <!-- 11) EDAD: Solo numérico -->
+                        <td><input type="text" id="reverso_edad" onblur="validateNumeric(this)" class="ruled-input text-center font-bold" placeholder="0" maxlength="3"></td>
+                        <!-- 9) HCU -->
+                        <td><input type="text" id="reverso_hcu" onblur="validateHCU(this)" class="ruled-input text-center text-xs font-bold" placeholder="Cédula (10) / 17 caract." maxlength="17"></td>
+                        <!-- 10) ARCHIVO -->
+                        <td><input type="text" id="reverso_archivo" onblur="validateArchivo(this)" class="ruled-input text-center text-xs font-bold" placeholder="000000" maxlength="6"></td>
                     </tr>
                 </tbody>
             </table>
 
-            <!-- SECTION B: EVOLUCIÓN Y PRESCRIPCIONES TAB 2 -->
+            <!-- SECCIÓN B. EVOLUCIÓN Y PRESCRIPCIONES (REVERSO) -->
             <table class="msp-table">
                 <thead>
                     <tr class="msp-header-bg">
-                        <th colspan="5" class="text-left font-extrabold py-1 px-2 text-xs">B. EVOLUCIÓN Y PRESCRIPCIONES</th>
+                        <th colspan="6" class="text-left text-xs uppercase px-2 py-1">B. EVOLUCIÓN Y PRESCRIPCIONES</th>
                     </tr>
-                    <tr class="bg-gray-100 text-center font-bold border-b border-gray-400">
-                        <th colspan="3" class="w-2/3 py-1 text-sm border-r border-gray-400">
+                    <tr class="msp-subheader-bg text-center text-[10px]">
+                        <th colspan="3" class="w-1/2 py-1">
                             1. EVOLUCIÓN
-                            <div class="text-[8px] font-normal text-gray-700 uppercase tracking-tight">FIRMAR AL PIE DE CADA EVOLUCIÓN Y PRESCRIPCIÓN</div>
+                            <div class="text-[8px] font-normal normal-case text-slate-700 tracking-tight">FIRMAR AL PIE DE CADA EVOLUCIÓN Y PRESCRIPCIÓN</div>
                         </th>
-                        <th colspan="2" class="w-1/3 py-1 text-sm">
+                        <th colspan="3" class="w-1/2 py-1">
                             2. PRESCRIPCIONES
-                            <div class="text-[8px] font-semibold text-red-600 uppercase tracking-tight">REGISTRAR CON ROJO LA ADMINISTRACIÓN DE FÁRMACOS Y COLOCACIÓN DE DISPOSITIVOS MÉDICOS</div>
+                            <div class="text-[7.5px] font-bold normal-case text-red-600 tracking-tight">REGISTRAR CON ROJO LA ADMINISTRACIÓN DE FÁRMACOS Y COLOCACIÓN DE DISPOSITIVOS MÉDICOS</div>
                         </th>
                     </tr>
-                    <tr class="bg-gray-50 text-center text-[9px] font-bold">
-                        <td class="w-1/12">FECHA<br><span class="font-normal text-[8px]">(aaaa-mm-dd)</span></td>
-                        <td class="w-1/12">HORA<br><span class="font-normal text-[8px]">(hh:mm)</span></td>
-                        <td class="border-r border-gray-400">NOTAS DE EVOLUCIÓN</td>
-                        <td class="w-3/4">FARMACOTERAPIA E INDICACIONES<br><span class="font-normal text-[9px]">(Para enfermería y otro profesional de salud)</span></td>
-                        <td class="w-16 text-[9px]">ADMINISTR. FÁRMACOS DISPOSITIVO</td>
+                    <tr class="bg-slate-100 text-[9px] text-center">
+                        <th class="w-[65px]">FECHA<br><span class="font-normal text-[8px]">(aaaa-mm-dd)</span></th>
+                        <th class="w-[50px]">HORA<br><span class="font-normal text-[8px]">(hh:mm)</span></th>
+                        <th>NOTAS DE EVOLUCIÓN</th>
+                        <th class="w-[50%]">FARMACOTERAPIA E INDICACIONES<br><span class="font-normal text-[8px]">(Para enfermería y otro profesional de salud)</span></th>
+                        <th class="w-[65px] text-[7.5px]">ADMINISTR. FÁRMACOS DISPOSITIVO</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="align-top bg-white p-1 w-20">
-                            <input type="date" id="t2-fecha" class="w-full text-center text-[11px] font-bold text-gray-800 bg-white focus:bg-yellow-50 outline-none border-b border-gray-300 py-0.5 cursor-pointer">
-                        </td>
-                        <td class="align-top bg-white p-1 w-16">
-                            <input type="time" id="t2-hora" class="w-full text-center text-[11px] font-bold text-gray-800 bg-white focus:bg-yellow-50 outline-none border-b border-gray-300 py-0.5 cursor-pointer">
-                        </td>
-                        <td class="align-top border-r border-gray-400 p-1">
-                            <textarea id="t2-evolucion-1" spellcheck="true" lang="es" oninput="validarMayusculas(this)" placeholder="Escriba las notas de evolución..." class="grid-textarea focus:bg-yellow-50/30 p-1 !min-h-[920px]"></textarea>
+                        <!-- Fecha y Hora -->
+                        <td class="align-top p-1">
+                            <input type="date" id="reverso_fecha" class="w-full text-[10px] font-mono border-none outline-none uppercase bg-transparent">
                         </td>
                         <td class="align-top p-1">
-                            <textarea id="t2-prescripcion-1" spellcheck="true" lang="es" oninput="validarMayusculas(this)" placeholder="Escriba la farmacoterapia e indicaciones..." class="grid-textarea focus:bg-yellow-50/30 p-1 !min-h-[920px]"></textarea>
+                            <input type="time" id="reverso_hora" class="w-full text-[10px] font-mono border-none outline-none uppercase bg-transparent">
                         </td>
-                        <td class="align-top p-1">
-                            <textarea id="t2-administracion-1" spellcheck="true" lang="es" oninput="validarMayusculas(this)" class="grid-textarea focus:bg-yellow-50/30 p-1 text-red-600 font-semibold !min-h-[920px]"></textarea>
+                        <!-- Textareas -->
+                        <td class="align-top p-0">
+                            <textarea id="reverso_notas" class="ruled-textarea" oninput="forceUpper(this)" placeholder="Escriba la nota de evolución aquí..."></textarea>
+                        </td>
+                        <td class="align-top p-0">
+                            <textarea id="reverso_prescripciones" class="ruled-textarea" oninput="forceUpper(this)" placeholder="Escriba las indicaciones y farmacoterapia aquí..."></textarea>
+                        </td>
+                        <td class="align-top p-0">
+                            <textarea id="reverso_administracion" class="ruled-textarea text-red-600 font-bold" oninput="forceUpper(this)" placeholder="Reg. rojo..."></textarea>
                         </td>
                     </tr>
                 </tbody>
             </table>
 
-            <!-- Digital Signature Placeholder / Info Box -->
-            <div id="t2-firma-box" class="hidden mt-2 p-2 border border-emerald-500 bg-emerald-50 rounded flex items-center justify-between text-xs">
-                <div class="flex items-center gap-2">
-                    <i class="fa-solid fa-signature text-emerald-600 text-lg"></i>
-                    <div>
-                        <p class="font-bold text-emerald-800">FIRMADO ELECTRÓNICAMENTE POR: <span id="t2-firmante-nombre">MEDICO AUTORIZADO</span></p>
-                        <p class="text-gray-600 text-[10px]">Fecha de emisión: <span id="t2-firmante-fecha"></span> | Certificado Válido (Security Token / PKCS#12)</p>
-                    </div>
-                </div>
-                <span class="text-emerald-700 font-mono text-[10px] bg-emerald-200 px-2 py-0.5 rounded font-bold">VÁLIDO</span>
-            </div>
-
-            <!-- Footer -->
-            <div class="flex justify-between items-center mt-3 text-[10px] text-gray-700 font-bold">
-                <span>SNS-MSP / HCU-form.005/2021</span>
-                <span class="text-xs font-black">EVOLUCIÓN Y PRESCRIPCIÓNES (2)</span>
+            <!-- Pie de Hoja Reverso -->
+            <div class="mt-2 flex justify-between items-center text-[9px] text-slate-700 font-mono">
+                <div>SNS-MSP / HCU-form.005/2021</div>
+                <div class="font-bold">EVOLUCIÓN Y PRESCRIPCIONES (2)</div>
             </div>
         </div>
-    </div>
 
-    <!-- MODAL FIRMA ELECTRÓNICA -->
-    <div id="modal-firma" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 border border-gray-200">
-            <div class="flex justify-between items-center pb-3 border-b border-gray-200">
-                <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
-                    <i class="fa-solid fa-shield-halved text-amber-600"></i> Firma Electrónica
-                </h3>
-                <button onclick="cerrarModalFirma()" class="text-gray-400 hover:text-gray-600 font-bold text-xl leading-none">&times;</button>
-            </div>
+    </main>
 
-            <div class="mt-4 space-y-4">
-                <div>
-                    <label class="block text-xs font-bold text-gray-700 mb-1">TIPO DE DISPOSITIVO / FIRMA</label>
-                    <select id="tipo-firma" onchange="toggleTipoFirma(this.value)" class="w-full text-xs p-2 border border-gray-300 rounded focus:ring-2 focus:ring-indigo-500 outline-none font-semibold">
-                        <option value="token">Token USB / Tarjeta Inteligente (PKCS#11)</option>
-                        <option value="archivo">Archivo Certificado (.p12 / .pfx)</option>
-                    </select>
-                </div>
+    <!-- FIREBASE FIRESTORE SYNC MULTIUSUARIO -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-                <!-- Campo para subir archivo de firma (.p12 / .pfx) -->
-                <div id="contenedor-archivo-firma" class="hidden">
-                    <label class="block text-xs font-bold text-gray-700 mb-1">SELECCIONAR ARCHIVO DE FIRMA (.P12 / .PFX)</label>
-                    <div class="flex items-center gap-2">
-                        <label class="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-gray-50 border border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-100 transition text-xs font-medium text-gray-600">
-                            <i class="fa-solid fa-file-contract text-amber-600 text-sm"></i>
-                            <span id="archivo-firma-nombre">Buscar archivo...</span>
-                            <input type="file" id="archivo-firma-input" accept=".p12,.pfx" onchange="actualizarNombreArchivoFirma(this)" class="hidden">
-                        </label>
-                    </div>
-                </div>
+        // Configuración Global o Fallback
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'msp-guamote-hcu';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' 
+            ? JSON.parse(__firebase_config) 
+            : { apiKey: "demo", authDomain: "demo.firebaseapp.com", projectId: "demo-app" };
 
-                <div>
-                    <label class="block text-xs font-bold text-gray-700 mb-1">NOMBRE DEL FIRMANTE</label>
-                    <input type="text" id="nombre-firmante-input" placeholder="DR. JUAN PÉREZ - CI: 1712345678" class="w-full text-xs p-2 border border-gray-300 rounded focus:ring-2 focus:ring-indigo-500 outline-none">
-                </div>
+        let db = null;
+        let auth = null;
+        let activeUser = null;
+        let isLocalUpdate = false;
 
-                <div>
-                    <label class="block text-xs font-bold text-gray-700 mb-1">PIN DE SEGURIDAD / CONTRASEÑA DE ARCHIVO</label>
-                    <input type="password" id="pin-firmante-input" placeholder="••••••••" class="w-full text-xs p-2 border border-gray-300 rounded focus:ring-2 focus:ring-indigo-500 outline-none">
-                </div>
+        try {
+            const app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            db = getFirestore(app);
 
-                <div class="p-3 bg-amber-50 border border-amber-200 rounded text-[11px] text-amber-800">
-                    <i class="fa-solid fa-circle-info mr-1"></i> <span id="info-firma-txt">Asegúrese de tener conectado su token USB antes de proceder.</span>
-                </div>
-            </div>
-
-            <div class="mt-6 flex justify-end gap-2">
-                <button onclick="cerrarModalFirma()" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 text-xs font-bold rounded-lg transition">Cancelar</button>
-                <button onclick="procesarFirma()" class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold rounded-lg transition shadow">Firmar Documento</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- JAVASCRIPT LOGIC -->
-    <script>
-        let currentTab = 1;
-        let certificadoCargado = null;
-
-        // Synchronize initial dates & times on window load
-        window.addEventListener('DOMContentLoaded', () => {
-            const now = new Date();
-            const fechaActual = now.toISOString().split('T')[0];
-            const horaActual = now.toTimeString().substring(0, 5);
-
-            ['t1-fecha', 't2-fecha'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el && !el.value) el.value = fechaActual;
-            });
-
-            ['t1-hora', 't2-hora'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el && !el.value) el.value = horaActual;
-            });
-        });
-
-        // Tab Switching
-        function switchTab(tabNum) {
-            currentTab = tabNum;
-            const tab1 = document.getElementById('tab-1');
-            const tab2 = document.getElementById('tab-2');
-            const btn1 = document.getElementById('tab-1-btn');
-            const btn2 = document.getElementById('tab-2-btn');
-
-            if (tabNum === 1) {
-                tab1.classList.remove('hidden');
-                tab2.classList.add('hidden');
-                btn1.className = "flex-1 md:flex-none px-5 py-2.5 rounded-md font-bold text-sm transition-all duration-200 bg-indigo-600 text-white shadow";
-                btn2.className = "flex-1 md:flex-none px-5 py-2.5 rounded-md font-bold text-sm transition-all duration-200 text-gray-700 hover:bg-gray-200";
-            } else {
-                tab2.classList.remove('hidden');
-                tab1.classList.add('hidden');
-                btn2.className = "flex-1 md:flex-none px-5 py-2.5 rounded-md font-bold text-sm transition-all duration-200 bg-indigo-600 text-white shadow";
-                btn1.className = "flex-1 md:flex-none px-5 py-2.5 rounded-md font-bold text-sm transition-all duration-200 text-gray-700 hover:bg-gray-200";
-            }
-        }
-
-        // Show error banner
-        function mostrarError(mensaje) {
-            const banner = document.getElementById('error-banner');
-            const msgSpan = document.getElementById('error-message');
-            msgSpan.textContent = mensaje;
-            banner.classList.remove('hidden');
-            setTimeout(() => {
-                banner.classList.add('hidden');
-            }, 5000);
-        }
-
-        // Auto uppercase and underline simulation
-        function validarMayusculas(el) {
-            const start = el.selectionStart;
-            const end = el.selectionEnd;
-            el.value = el.value.toUpperCase();
-            if (start !== null && end !== null && el.type === 'text') {
-                el.setSelectionRange(start, end);
-            }
-        }
-
-        // Ecuadorian Cedula Validation (Algorithm 30) or 17 characters string
-        function validarHCU(el) {
-            const val = el.value.trim();
-            if (!val) return;
-
-            if (val.length === 17) {
-                el.classList.remove('bg-red-100', 'border-red-500');
-                return true;
-            }
-
-            if (val.length === 10 && /^\d+$/.test(val)) {
-                const digitoRegion = parseInt(val.substring(0, 2), 10);
-                if (digitoRegion >= 1 && digitoRegion <= 24) {
-                    const ultimoDigito = parseInt(val.substring(9, 10), 10);
-                    let suma = 0;
-                    for (let i = 0; i < 9; i++) {
-                        let mult = parseInt(val.charAt(i), 10) * (i % 2 === 0 ? 2 : 1);
-                        if (mult > 9) mult -= 9;
-                        suma += mult;
+            // Iniciar Sesión para Habilitar Firestore Multi-usuario
+            const initAuth = async () => {
+                try {
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } else {
+                        await signInAnonymously(auth);
                     }
-                    const digitoVerificador = (Math.ceil(suma / 10) * 10) - suma;
-                    const finalCheck = digitoVerificador === 10 ? 0 : digitoVerificador;
-                    if (finalCheck === ultimoDigito) {
-                        el.classList.remove('bg-red-100', 'border-red-500');
-                        return true;
-                    }
+                } catch (authError) {
+                    console.warn("Autenticación no disponible o fallida, cambiando a modo local:", authError);
+                    updateSyncBadgeState(false, "Modo Local (Sin autenticación)");
                 }
-            }
-
-            mostrarError("ERROR: El NÚMERO DE HISTORIA CLÍNICA ÚNICA debe ser una Cédula Ecuatoriana válida de 10 dígitos o un código de exactamente 17 caracteres.");
-            el.classList.add('bg-red-100', 'border-red-500');
-            return false;
-        }
-
-        // Allow up to 6 digits, preserve leading zeroes
-        function validarArchivoSeisDigitos(el) {
-            el.value = el.value.replace(/\D/g, '').slice(0, 6);
-        }
-
-        // Numeric only input
-        function validarSoloNumeros(el) {
-            el.value = el.value.replace(/\D/g, '');
-        }
-
-        // Sex validation (Only 'M' or 'F')
-        function validarSexo(el) {
-            let val = el.value.toUpperCase();
-            if (val !== 'M' && val !== 'F') {
-                val = '';
-            }
-            el.value = val;
-        }
-
-        // Single character marker for age condition
-        function validarMarcaCondicion(el) {
-            el.value = el.value.toUpperCase();
-            if (el.value.length > 1) {
-                el.value = el.value.charAt(0);
-            }
-        }
-
-        // Clear Form Data
-        function limpiarFormulario() {
-            const activeTabId = currentTab === 1 ? 'tab-1' : 'tab-2';
-            const inputs = document.querySelectorAll(`#${activeTabId} input:not([readonly]), #${activeTabId} textarea`);
-            inputs.forEach(input => {
-                input.value = '';
-                input.classList.remove('bg-red-100', 'border-red-500');
-            });
-            const firmaBox = document.getElementById(`t${currentTab}-firma-box`);
-            if (firmaBox) firmaBox.classList.add('hidden');
-        }
-
-        // Print Form
-        function imprimirFormulario() {
-            window.print();
-        }
-
-        // Auto Download PDF with Strict A4 Settings
-        function descargarPDF() {
-            const element = document.getElementById('form-container');
-            const opt = {
-                margin:       [3, 3, 3, 3],
-                filename:     `Formulario_005_MSP_Pestaña_${currentTab}.pdf`,
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true, scrollY: 0 },
-                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
-            html2pdf().set(opt).from(element).save();
+            initAuth();
+
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    activeUser = user;
+                    updateSyncBadgeState(true, `Sincronizado (ID: ${user.uid.slice(0,5)}...)`);
+                    listenToDocumentChanges();
+                }
+            });
+        } catch (e) {
+            console.warn("Firestore no configurado, operando en modo local.", e);
+            updateSyncBadgeState(false, "Modo Local (Sin red)");
         }
 
-        // Electronic Signature Modal Handlers
-        function abrirModalFirma() {
-            document.getElementById('modal-firma').classList.remove('hidden');
-        }
-
-        function cerrarModalFirma() {
-            document.getElementById('modal-firma').classList.add('hidden');
-        }
-
-        function toggleTipoFirma(tipo) {
-            const contArchivo = document.getElementById('contenedor-archivo-firma');
-            const infoTxt = document.getElementById('info-firma-txt');
-            if (tipo === 'archivo') {
-                contArchivo.classList.remove('hidden');
-                infoTxt.textContent = "Seleccione el archivo .p12 o .pfx de su firma digital e ingrese la contraseña correspondiente.";
-            } else {
-                contArchivo.classList.add('hidden');
-                infoTxt.textContent = "Asegúrese de tener conectado su token USB antes de proceder.";
+        function updateSyncBadgeState(isOnline, text) {
+            const badge = document.getElementById('sync-badge');
+            const syncText = document.getElementById('sync-text');
+            if (badge && syncText) {
+                if (isOnline) {
+                    badge.className = "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs bg-emerald-950 text-emerald-400 border border-emerald-800 mr-2";
+                } else {
+                    badge.className = "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs bg-amber-950 text-amber-400 border border-amber-800 mr-2";
+                }
+                syncText.innerText = text;
             }
         }
 
-        function actualizarNombreArchivoFirma(input) {
-            const lbl = document.getElementById('archivo-firma-nombre');
-            if (input.files && input.files[0]) {
-                certificadoCargado = input.files[0];
-                lbl.textContent = certificadoCargado.name;
-                lbl.classList.add('font-bold', 'text-amber-700');
-            } else {
-                certificadoCargado = null;
-                lbl.textContent = "Buscar archivo...";
-                lbl.classList.remove('font-bold', 'text-amber-700');
-            }
+        // Referencia del Documento Compartido
+        function getDocRef() {
+            if (!db) return null;
+            return doc(db, 'artifacts', appId, 'forms', 'form_hcu_005');
         }
 
-        function procesarFirma() {
-            const tipo = document.getElementById('tipo-firma').value;
-            const nombre = document.getElementById('nombre-firmante-input').value.trim();
-            const pin = document.getElementById('pin-firmante-input').value.trim();
+        // 4) Escuchar cambios en Tiempo Real para MÚLTIPLES USUARIOS SIMULTÁNEOS
+        function listenToDocumentChanges() {
+            const docRef = getDocRef();
+            if (!docRef || !activeUser) return;
 
-            if (tipo === 'archivo' && !certificadoCargado) {
-                mostrarError("Por favor seleccione un archivo certificado (.p12 o .pfx).");
-                return;
-            }
-
-            if (!nombre || !pin) {
-                mostrarError("Por favor ingrese el Nombre del firmante y la clave/PIN de seguridad.");
-                return;
-            }
-
-            const activePrefix = `t${currentTab}`;
-            const firmaBox = document.getElementById(`${activePrefix}-firma-box`);
-            const firmanteNombre = document.getElementById(`${activePrefix}-firmante-nombre`);
-            const firmanteFecha = document.getElementById(`${activePrefix}-firmante-fecha`);
-
-            if (firmaBox && firmanteNombre && firmanteFecha) {
-                const origenTxt = tipo === 'archivo' ? `Archivo (${certificadoCargado.name})` : 'Security Token USB (PKCS#11)';
-                firmanteNombre.textContent = nombre.toUpperCase();
-                firmanteFecha.textContent = `${new Date().toLocaleString('es-EC')} | Certificado: ${origenTxt}`;
-                firmaBox.classList.remove('hidden');
-            }
-
-            cerrarModalFirma();
+            onSnapshot(docRef, (snapshot) => {
+                if (snapshot.exists() && !isLocalUpdate) {
+                    const data = snapshot.data();
+                    if (window.applyDataToForm) {
+                        window.applyDataToForm(data);
+                    }
+                }
+            }, (error) => {
+                console.warn("Aviso de sincronización en tiempo real:", error.message);
+                updateSyncBadgeState(false, "Modo Local (Sin permiso remoto)");
+            });
         }
+
+        // Guardar automáticamente al escribir
+        window.saveDataToCloud = function() {
+            const docRef = getDocRef();
+            if (!docRef || !activeUser) return;
+            if (typeof window.collectFormData !== 'function') return;
+
+            const data = window.collectFormData();
+            isLocalUpdate = true;
+            setDoc(docRef, data, { merge: true })
+                .then(() => { isLocalUpdate = false; })
+                .catch((err) => { 
+                    isLocalUpdate = false; 
+                    console.warn("No se pudo sincronizar en la nube:", err.message);
+                    updateSyncBadgeState(false, "Modo Local (Sin permiso remoto)");
+                });
+        };
     </script>
-</body>
-</html>
+
+    <!-- LÓGICA DE INTERFACES, VALIDACIONES Y PDF -->
+    <script>
+        let activeTab = 'anverso';
+
+        // ---------------------------------------------------------------------
+        // RECOLECCIÓN Y APLICACIÓN DE DATOS PARA SINCRONIZACIÓN Y NUBE
+        // ---------------------------------------------------------------------
+        window.collectFormData = function() {
+            const data = {};
+            // Recolectar todos los campos con ID
+            const inputs = document.querySelectorAll('input[id], textarea[id]');
+            inputs.forEach(el => {
+                if (el.id) {
+                    data[el.id] = el.value || '';
+                }
+            });
+
+            // Recolectar Radio Buttons (Condición edad)
+            const radioSelected = document.querySelector('input[name="condicion_edad_anverso"]:checked');
+            data['condicion_edad_anverso'] = radioSelected ? radioSelected.value : '';
+
+            return data;
+        };
+
+        window.applyDataToForm = function(data) {
+            if (!data) return;
+
+            // Cargar valores a inputs y textareas
+            Object.keys(data).forEach(key => {
+                if (key === 'condicion_edad_anverso') {
+                    const val = data[key];
+                    const radio = document.querySelector(`input[name="condicion_edad_anverso"][value="${val}"]`);
+                    if (radio) radio.checked = true;
+                } else {
+                    const el = document.getElementById(key);
+                    if (el && el.value !== data[key]) {
+                        el.value = data[key];
+                    }
+                }
+            });
+        };
+
+        // Inicializar Fecha/Hora actual por defecto
+        window.onload = function() {
+            const now = new Date();
+            const dateStr = now.toISOString().split('T')[0];
+            const timeStr = now.toTimeString().split(' ')[0].substring(0,5);
+
+            if (!document.getElementById('anverso_fecha').value) {
+                document.getElementById('anverso_fecha').value = dateStr;
+            }
+            if (!document.getElementById('anverso_hora').value) {
+                document.getElementById('anverso_hora').value = timeStr;
+            }
+            if (!document.getElementById('reverso_fecha').value) {
+                document.getElementById('reverso_fecha').value = dateStr;
+            }
+            if (!document.getElementById('reverso_hora').value) {
+                document.getElementById('reverso_hora').value = timeStr;
+            }
+
+            // Escuchar cambios para auto-guardado colaborativo
+            const inputs = document.querySelectorAll('input, textarea');
+            inputs.forEach(input => {
+                input.addEventListener('input', () => {
+                    if (window.saveDataToCloud) window.saveDataToCloud();
+                });
+                input.addEventListener('change', () => {
+                    if (window.saveDataToCloud) window.saveDataToCloud();
+                });
+            });
+        };
+
+        // Cambio de Pestañas
+        function switchTab(tab) {
+            activeTab = tab;
+            const tabAnverso = document.getElementById('tab-anverso');
+            const tabReverso = document.getElementById('tab-reverso');
+            const btnAnverso = document.getElementById('tab-anverso-btn');
+            const btnReverso = document.getElementById('tab-reverso-btn');
+
+            if (tab === 'anverso') {
+                tabAnverso.classList.remove('hidden');
+                tabReverso.classList.add('hidden');
+                btnAnverso.className = "px-6 py-2.5 font-bold text-sm border-b-2 border-cyan-400 text-cyan-400 bg-slate-900/50 flex items-center gap-2";
+                btnReverso.className = "px-6 py-2.5 font-semibold text-sm text-slate-400 hover:text-white border-b-2 border-transparent hover:border-slate-500 flex items-center gap-2";
+            } else {
+                tabAnverso.classList.add('hidden');
+                tabReverso.classList.remove('hidden');
+                btnReverso.className = "px-6 py-2.5 font-bold text-sm border-b-2 border-cyan-400 text-cyan-400 bg-slate-900/50 flex items-center gap-2";
+                btnAnverso.className = "px-6 py-2.5 font-semibold text-sm text-slate-400 hover:text-white border-b-2 border-transparent hover:border-slate-500 flex items-center gap-2";
+            }
+        }
+
+        // 5) Todo texto a Mayúscula en tiempo real
+        function forceUpper(element) {
+            const start = element.selectionStart;
+            const end = element.selectionEnd;
+            element.value = element.value.toUpperCase();
+            if (start !== null) element.setSelectionRange(start, end);
+        }
+
+        // Modal de Alertas (sin alert())
+        function showError(msg) {
+            document.getElementById('modal-message').innerText = msg;
+            document.getElementById('error-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('error-modal').classList.add('hidden');
+        }
+
+        // VALIDACIÓN DE CÉDULA ECUATORIANA (Algoritmo Módulo 10)
+        function validEcuadorianID(cedula) {
+            if (cedula.length !== 10) return false;
+            if (!/^\d+$/.test(cedula)) return false;
+
+            const digitoRegion = parseInt(cedula.substring(0, 2), 10);
+            if (digitoRegion < 1 || (digitoRegion > 24 && digitoRegion !== 30)) return false;
+
+            const tercerDigito = parseInt(cedula.substring(2, 3), 10);
+            if (tercerDigito >= 6) return false;
+
+            const coeficientes = [2, 1, 2, 1, 2, 1, 2, 1, 2];
+            const verificador = parseInt(cedula.substring(9, 10), 10);
+            let suma = 0;
+
+            for (let i = 0; i < 9; i++) {
+                let valor = parseInt(cedula.substring(i, i + 1), 10) * coeficientes[i];
+                if (valor >= 10) valor -= 9;
+                suma += valor;
+            }
+
+            const total = (Math.ceil(suma / 10) * 10) - suma;
+            const resultado = total === 10 ? 0 : total;
+
+            return resultado === verificador;
+        }
+
+        // 9) NÚMERO DE HISTORIA CLÍNICA ÚNICA: Cédula válida o Cadena de longitud exacta de 17 caracteres
+        function validateHCU(input) {
+            forceUpper(input);
+            const val = input.value.trim();
+            if (!val) return;
+
+            const isValidID = validEcuadorianID(val);
+            const isValidLength17 = val.length === 17;
+
+            if (!isValidID && !isValidLength17) {
+                showError("NÚMERO DE HISTORIA CLÍNICA ÚNICA INVÁLIDO:\nDebe ser una Cédula de Identidad válida (10 dígitos) o una cadena de texto de exactamente 17 caracteres.");
+                input.classList.add('bg-red-100');
+            } else {
+                input.classList.remove('bg-red-100');
+            }
+        }
+
+        // 10) NÚMERO DE ARCHIVO: 6 dígitos permitiendo ceros a la izquierda
+        function validateArchivo(input) {
+            const val = input.value.trim();
+            if (!val) return;
+
+            if (!/^\d{1,6}$/.test(val)) {
+                showError("NÚMERO DE ARCHIVO INVÁLIDO: Debe ser un número numérico de máximo 6 dígitos.");
+                input.classList.add('bg-red-100');
+            } else {
+                // Pad con ceros al inicio a 6 dígitos si se desea o mantener formato
+                input.value = val.padStart(6, '0');
+                input.classList.remove('bg-red-100');
+            }
+        }
+
+        // 11) No. HOJA y EDAD: Solo valores numéricos
+        function validateNumeric(input) {
+            const val = input.value.trim();
+            if (!val) return;
+
+            if (!/^\d+$/.test(val)) {
+                showError("CAMPO NUMÉRICO: Solo se permiten números enteros en este casillero.");
+                input.value = "";
+                input.classList.add('bg-red-100');
+            } else {
+                input.classList.remove('bg-red-100');
+            }
+        }
+
+        // 12) SEXO: Valor M o F exclusivamente
+        function validateSexo(input) {
+            forceUpper(input);
+            const val = input.value.trim();
+            if (!val) return;
+
+            if (val !== 'M' && val !== 'F') {
+                showError("SEXO INVÁLIDO: Solo se permite ingresar el carácter 'M' (Masculino) o 'F' (Femenino).");
+                input.value = "";
+                input.classList.add('bg-red-100');
+            } else {
+                input.classList.remove('bg-red-100');
+            }
+        }
+
+        // 1) Limpiar la información ingresada
+        function confirmClearData() {
+            if (window.confirm("¿Está seguro de limpiar todos los datos de los formularios ANVERSO y REVERSO?")) {
+                const inputs = document.querySelectorAll('input[type="text"], textarea');
+                inputs.forEach(i => i.value = '');
+
+                const radios = document.querySelectorAll('input[type="radio"]');
+                radios.forEach(r => r.checked = false);
+
+                if (window.saveDataToCloud) window.saveDataToCloud();
+            }
+        }
+
+        // 3) Descargar automáticamente en PDF formato A4
+        function downloadPDF() {
+            // Mostrar temporalmente la pestaña activa y generar el reporte completo
+            const currentTab = activeTab;
+            const targetElement = document.getElementById(`tab-${currentTab}`);
+
+            const isAnverso = currentTab === 'anverso';
+
+            const opt = {
+                margin:       [0, 0, 0, 0],
+                filename:     `HCU_005_Evolucion_Prescripcion_${currentTab.toUpperCase()}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true, scrollY: 0 },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                pagebreak:    isAnverso 
+                    ? { mode: 'avoid-all' } 
+                    : { mode: ['css', 'legacy'] }
+            };
+
+            // Para ANVERSO forzar a 1 sola página exacta en html2pdf
+            if (isAnverso) {
+                html2pdf().set(opt).from(targetElement).toPdf().get('jspdf').then(function (pdf) {
+                    const totalPages = pdf.internal.getNumberOfPages();
+                    for (let i = totalPages; i > 1; i--) {
+                        pdf.deletePage(i);
+                    }
+                }).save();
+            } else {
+                html2pdf().set(opt).from(targetElement).save();
+            }
+        }
+
+        // Recolectar datos para sincronización
+<!-- ... existing code -->
