@@ -45,30 +45,20 @@
             font-weight: bold;
         }
 
-        /* Transformación a MAYÚSCULAS y Subrayado simulando líneas de cuaderno */
-        .uppercase-underline {
-            text-transform: uppercase;
-            text-decoration: underline;
-            text-underline-offset: 4px;
-            text-decoration-thickness: 1px;
-            font-family: 'Roboto Mono', monospace;
-            font-weight: 500;
-        }
-
-        /* Campos de texto / Textareas con líneas graduadas para impresión */
+        /* Campos de texto sin subrayado y en MAYÚSCULAS */
         .ruled-input {
             width: 100%;
             background: transparent;
             border: none;
             outline: none;
             text-transform: uppercase;
-            text-decoration: underline;
-            text-underline-offset: 4px;
+            text-decoration: none;
             font-family: 'Roboto Mono', monospace;
             font-size: 12px;
             color: #000;
         }
 
+        /* Textareas con líneas horizontales de renglón y texto sin subrayado */
         .ruled-textarea {
             width: 100%;
             height: 100%;
@@ -83,6 +73,7 @@
             border: none;
             outline: none;
             text-transform: uppercase;
+            text-decoration: none;
             font-family: 'Roboto Mono', monospace;
             font-size: 12px;
             resize: none;
@@ -203,8 +194,8 @@
                 </div>
             </div>
 
-            <!-- Botones de Acción Solicitados -->
-            <div class="flex items-center gap-2">
+            <!-- Botones de Acción -->
+            <div class="flex items-center gap-2 flex-wrap">
                 <!-- Estado de Sincronización Multi-usuario -->
                 <div id="sync-badge" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs bg-slate-800 text-amber-400 border border-slate-700 mr-2">
                     <i class="fa-solid fa-users text-xs"></i>
@@ -212,17 +203,17 @@
                 </div>
 
                 <!-- Botón Limpiar -->
-                <button onclick="confirmClearData()" class="px-3.5 py-1.5 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded-lg transition flex items-center gap-2 shadow">
+                <button type="button" onclick="openClearModal()" class="px-3.5 py-1.5 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded-lg transition flex items-center gap-2 shadow">
                     <i class="fa-solid fa-trash-can"></i> Limpiar
                 </button>
 
                 <!-- Botón Imprimir A4 -->
-                <button onclick="window.print()" class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg transition flex items-center gap-2 shadow">
+                <button type="button" onclick="window.print()" class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg transition flex items-center gap-2 shadow">
                     <i class="fa-solid fa-print"></i> Imprimir A4
                 </button>
 
                 <!-- Botón Descargar PDF A4 -->
-                <button onclick="downloadPDF()" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-lg transition flex items-center gap-2 shadow">
+                <button type="button" onclick="downloadPDF()" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-lg transition flex items-center gap-2 shadow">
                     <i class="fa-solid fa-file-pdf"></i> Descargar PDF
                 </button>
             </div>
@@ -231,27 +222,46 @@
         <!-- PESTAÑAS ANVERSO Y REVERSO -->
         <div class="bg-slate-800 border-t border-slate-700">
             <div class="max-w-7xl mx-auto flex">
-                <button id="tab-anverso-btn" onclick="switchTab('anverso')" class="px-6 py-2.5 font-bold text-sm border-b-2 border-cyan-400 text-cyan-400 bg-slate-900/50 flex items-center gap-2">
+                <button type="button" id="tab-anverso-btn" onclick="switchTab('anverso')" class="px-6 py-2.5 font-bold text-sm border-b-2 border-cyan-400 text-cyan-400 bg-slate-900/50 flex items-center gap-2">
                     <i class="fa-regular fa-copy"></i> 1. ANVERSO (EVOLUCIÓN Y PRESCRIPCIÓN 1)
                 </button>
-                <button id="tab-reverso-btn" onclick="switchTab('reverso')" class="px-6 py-2.5 font-semibold text-sm text-slate-400 hover:text-white border-b-2 border-transparent hover:border-slate-500 flex items-center gap-2">
+                <button type="button" id="tab-reverso-btn" onclick="switchTab('reverso')" class="px-6 py-2.5 font-semibold text-sm text-slate-400 hover:text-white border-b-2 border-transparent hover:border-slate-500 flex items-center gap-2">
                     <i class="fa-regular fa-file"></i> 2. REVERSO (EVOLUCIÓN Y PRESCRIPCIÓN 2)
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- MENSAJE DE ERROR / NOTIFICACIONES MODAL CUSTOM -->
+    <!-- MODAL DE ERROR DE VALIDACIÓN -->
     <div id="error-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 no-print">
         <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 text-center border-t-4 border-red-500">
             <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4 text-red-600">
                 <i class="fa-solid fa-triangle-exclamation text-xl"></i>
             </div>
             <h3 class="text-lg font-bold text-slate-900 mb-2" id="modal-title">ERROR DE VALIDACIÓN</h3>
-            <p class="text-sm text-slate-600 mb-6" id="modal-message">Descripción del error.</p>
-            <button onclick="closeModal()" class="px-5 py-2 bg-red-600 text-white text-sm font-bold rounded-lg hover:bg-red-700 transition">
+            <p class="text-sm text-slate-600 mb-6 whitespace-pre-line" id="modal-message">Descripción del error.</p>
+            <button type="button" onclick="closeModal()" class="px-5 py-2 bg-red-600 text-white text-sm font-bold rounded-lg hover:bg-red-700 transition">
                 Entendido
             </button>
+        </div>
+    </div>
+
+    <!-- MODAL PERSONALIZADO PARA CONFIRMAR LIMPIEZA -->
+    <div id="confirm-clear-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 no-print">
+        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 text-center border-t-4 border-amber-500">
+            <div class="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4 text-amber-600">
+                <i class="fa-solid fa-broom text-xl"></i>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900 mb-2">LIMPIAR FORMULARIO</h3>
+            <p class="text-sm text-slate-600 mb-6">¿Está seguro de limpiar todos los datos ingresados en las hojas ANVERSO y REVERSO?</p>
+            <div class="flex justify-center gap-3">
+                <button type="button" onclick="closeClearModal()" class="px-4 py-2 bg-slate-200 text-slate-800 text-sm font-bold rounded-lg hover:bg-slate-300 transition">
+                    Cancelar
+                </button>
+                <button type="button" onclick="executeClearData()" class="px-4 py-2 bg-red-600 text-white text-sm font-bold rounded-lg hover:bg-red-700 transition">
+                    Sí, limpiar todo
+                </button>
+            </div>
         </div>
     </div>
 
@@ -262,15 +272,15 @@
         <!-- PESTAÑA 1: ANVERSO -->
         <!-- ========================================================================= -->
         <div id="tab-anverso" class="a4-page border border-slate-300">
-            <!-- TITULO SECCION A -->
+            <!-- TÍTULO SECCIÓN A -->
             <table class="msp-table mb-1">
                 <thead>
                     <tr class="msp-header-bg">
-                        <th colspan="12" class="text-left text-xs uppercase px-2 py-1">A. DATOS DEL ESTABLECIMIENTO Y USUARIO / PACIENTE</th>
+                        <th colspan="6" class="text-left text-xs uppercase px-2 py-1">A. DATOS DEL ESTABLECIMIENTO Y USUARIO / PACIENTE</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Fila 1 Cabeza -->
+                    <!-- Fila 1 Encabezados -->
                     <tr class="msp-subheader-bg text-center text-[10px]">
                         <td class="w-1/6">INSTITUCIÓN DEL SISTEMA</td>
                         <td class="w-1/12">UNICÓDIGO</td>
@@ -280,21 +290,21 @@
                         <td class="w-1/12">No. HOJA</td>
                     </tr>
                     <tr class="text-center font-bold">
-                        <!-- 7) INSTITUCIÓN DEL SISTEMA = MINISTERIO DE SALUD PÚBLICA (no editable) -->
+                        <!-- INSTITUCIÓN DEL SISTEMA (no editable) -->
                         <td class="bg-slate-100 text-slate-800 text-[10px]">MINISTERIO DE SALUD PÚBLICA</td>
-                        <!-- 7) UNICÓDIGO = 000473 (no editable) -->
+                        <!-- UNICÓDIGO (no editable) -->
                         <td class="bg-slate-100 text-slate-800 text-[11px]">000473</td>
-                        <!-- 8) ESTABLECIMIENTO DE SALUD = HOSPITAL BÁSICO DE GUAMOTE (no editable) -->
+                        <!-- ESTABLECIMIENTO DE SALUD (no editable) -->
                         <td class="bg-slate-100 text-slate-800 text-[10px]">HOSPITAL BÁSICO DE GUAMOTE</td>
-                        <!-- 9) NÚMERO DE HISTORIA CLÍNICA ÚNICA: Cédula o 17 caracteres -->
+                        <!-- NÚMERO DE HISTORIA CLÍNICA ÚNICA: Cédula o 17 caracteres -->
                         <td>
-                            <input type="text" id="anverso_hcu" onblur="validateHCU(this)" class="ruled-input text-center text-xs font-bold" placeholder="Cédula (10) / 17 caract." maxlength="17">
+                            <input type="text" id="anverso_hcu" oninput="forceUpper(this)" onblur="validateHCU(this)" class="ruled-input text-center text-xs font-bold" placeholder="Cédula (10) / 17 caract." maxlength="17">
                         </td>
-                        <!-- 10) NÚMERO DE ARCHIVO: 6 dígitos permitiendo ceros al inicio -->
+                        <!-- NÚMERO DE ARCHIVO: 6 dígitos permitiendo ceros al inicio -->
                         <td>
                             <input type="text" id="anverso_archivo" onblur="validateArchivo(this)" class="ruled-input text-center text-xs font-bold" placeholder="000000" maxlength="6">
                         </td>
-                        <!-- 11) No. HOJA: Solo numérico -->
+                        <!-- No. HOJA: Solo numérico -->
                         <td>
                             <input type="text" id="anverso_no_hoja" onblur="validateNumeric(this)" class="ruled-input text-center text-xs font-bold" placeholder="1" maxlength="4">
                         </td>
@@ -302,7 +312,7 @@
                 </tbody>
             </table>
 
-            <!-- Fila 2 Paciente -->
+            <!-- Fila 2 Paciente (Corregido el cierre de </tr>, </tbody> y </table>) -->
             <table class="msp-table mb-2">
                 <tbody>
                     <tr class="msp-subheader-bg text-center text-[10px]">
@@ -319,19 +329,21 @@
                         </td>
                     </tr>
                     <tr class="text-center">
-                        <td><input type="text" id="anverso_p_apellido" class="ruled-input text-center" oninput="forceUpper(this)"></td>
+                        <!-- Solo una palabra permitida en Primer Apellido -->
+                        <td><input type="text" id="anverso_p_apellido" class="ruled-input text-center" oninput="enforceSingleWord(this)"></td>
                         <td><input type="text" id="anverso_s_apellido" class="ruled-input text-center" oninput="forceUpper(this)"></td>
-                        <td><input type="text" id="anverso_p_nombre" class="ruled-input text-center" oninput="forceUpper(this)"></td>
+                        <!-- Solo una palabra permitida en Primer Nombre -->
+                        <td><input type="text" id="anverso_p_nombre" class="ruled-input text-center" oninput="enforceSingleWord(this)"></td>
                         <td><input type="text" id="anverso_s_nombre" class="ruled-input text-center" oninput="forceUpper(this)"></td>
-                        <!-- 12) SEXO: M o F -->
+                        <!-- SEXO: M o F -->
                         <td>
-                            <input type="text" id="anverso_sexo" onblur="validateSexo(this)" class="ruled-input text-center font-bold" placeholder="M/F" maxlength="1">
+                            <input type="text" id="anverso_sexo" oninput="forceUpper(this)" onblur="validateSexo(this)" class="ruled-input text-center font-bold" placeholder="M/F" maxlength="1">
                         </td>
-                        <!-- 11) EDAD: solo numérico -->
+                        <!-- EDAD: solo numérico -->
                         <td>
                             <input type="text" id="anverso_edad" onblur="validateNumeric(this)" class="ruled-input text-center font-bold" placeholder="0" maxlength="3">
                         </td>
-                        <!-- 13) CONDICIÓN EDAD: 4 casilleros H, D, M, A -->
+                        <!-- CONDICIÓN EDAD: 4 casilleros H, D, M, A -->
                         <td>
                             <div class="flex justify-around items-center py-1">
                                 <label class="text-[9px] cursor-pointer flex flex-col items-center">
@@ -352,18 +364,22 @@
                                 </label>
                             </div>
                         </td>
-            <!-- SECCIÓN B. EVOLUCIÓN Y PRESCRIPCIÓN ES (ANVERSO) -->
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- SECCIÓN B. EVOLUCIÓN Y PRESCRIPCIONES (ANVERSO) -->
             <table class="msp-table">
                 <thead>
                     <tr class="msp-header-bg">
-                        <th colspan="6" class="text-left text-xs uppercase px-2 py-1">B. EVOLUCIÓN Y PRESCRIPCIONES</th>
+                        <th colspan="5" class="text-left text-xs uppercase px-2 py-1">B. EVOLUCIÓN Y PRESCRIPCIONES</th>
                     </tr>
                     <tr class="msp-subheader-bg text-center text-[10px]">
                         <th colspan="3" class="w-1/2 py-1">
                             1. EVOLUCIÓN
                             <div class="text-[8px] font-normal normal-case text-slate-700 tracking-tight">FIRMAR AL PIE DE CADA EVOLUCIÓN Y PRESCRIPCIÓN</div>
                         </th>
-                        <th colspan="3" class="w-1/2 py-1">
+                        <th colspan="2" class="w-1/2 py-1">
                             2. PRESCRIPCIONES
                             <div class="text-[7.5px] font-bold normal-case text-red-600 tracking-tight">REGISTRAR CON ROJO LA ADMINISTRACIÓN DE FÁRMACOS Y COLOCACIÓN DE DISPOSITIVOS MÉDICOS</div>
                         </th>
@@ -372,21 +388,21 @@
                         <th class="w-[65px]">FECHA<br><span class="font-normal text-[8px]">(aaaa-mm-dd)</span></th>
                         <th class="w-[50px]">HORA<br><span class="font-normal text-[8px]">(hh:mm)</span></th>
                         <th>NOTAS DE EVOLUCIÓN</th>
-                        <th class="w-[50%]">FARMACOTERAPIA E INDICACIONES<br><span class="font-normal text-[8px]">(Para enfermería y otro profesional de salud)</span></th>
-                        <th class="w-[65px] text-[7.5px]">ADMINISTR. FÁRMACOS DISPOSITIVO</th>
+                        <th class="w-[38%]">FARMACOTERAPIA E INDICACIONES<br><span class="font-normal text-[8px]">(Para enfermería y otro profesional de salud)</span></th>
+                        <th class="w-[70px] text-[7.5px]">ADMINISTR. FÁRMACOS DISPOSITIVO</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <!-- 6) Fecha editable calendario -->
+                        <!-- Fecha editable calendario -->
                         <td class="align-top p-1">
                             <input type="date" id="anverso_fecha" class="w-full text-[10px] font-mono border-none outline-none uppercase bg-transparent">
                         </td>
-                        <!-- 6) Hora editable -->
+                        <!-- Hora editable -->
                         <td class="align-top p-1">
                             <input type="time" id="anverso_hora" class="w-full text-[10px] font-mono border-none outline-none uppercase bg-transparent">
                         </td>
-                        <!-- 5) Notas de Evolución: Mayúsculas y subrayado simulando renglones -->
+                        <!-- Notas de Evolución -->
                         <td class="align-top p-0">
                             <textarea id="anverso_notas" class="ruled-textarea" oninput="forceUpper(this)" placeholder="Escriba la nota de evolución aquí..."></textarea>
                         </td>
@@ -414,7 +430,7 @@
         <!-- PESTAÑA 2: REVERSO -->
         <!-- ========================================================================= -->
         <div id="tab-reverso" class="a4-page border border-slate-300 hidden">
-            <!-- TITULO SECCION A (REVERSO) -->
+            <!-- TÍTULO SECCIÓN A (REVERSO) -->
             <table class="msp-table mb-2">
                 <thead>
                     <tr class="msp-header-bg">
@@ -430,13 +446,15 @@
                         <td class="w-1/6">NÚMERO DE ARCHIVO</td>
                     </tr>
                     <tr class="text-center">
-                        <td><input type="text" id="reverso_p_apellido" class="ruled-input text-center" oninput="forceUpper(this)"></td>
-                        <td><input type="text" id="reverso_p_nombre" class="ruled-input text-center" oninput="forceUpper(this)"></td>
-                        <!-- 11) EDAD: Solo numérico -->
+                        <!-- Solo una palabra permitida en Primer Apellido -->
+                        <td><input type="text" id="reverso_p_apellido" class="ruled-input text-center" oninput="enforceSingleWord(this)"></td>
+                        <!-- Solo una palabra permitida en Primer Nombre -->
+                        <td><input type="text" id="reverso_p_nombre" class="ruled-input text-center" oninput="enforceSingleWord(this)"></td>
+                        <!-- EDAD: Solo numérico -->
                         <td><input type="text" id="reverso_edad" onblur="validateNumeric(this)" class="ruled-input text-center font-bold" placeholder="0" maxlength="3"></td>
-                        <!-- 9) HCU -->
-                        <td><input type="text" id="reverso_hcu" onblur="validateHCU(this)" class="ruled-input text-center text-xs font-bold" placeholder="Cédula (10) / 17 caract." maxlength="17"></td>
-                        <!-- 10) ARCHIVO -->
+                        <!-- HCU -->
+                        <td><input type="text" id="reverso_hcu" oninput="forceUpper(this)" onblur="validateHCU(this)" class="ruled-input text-center text-xs font-bold" placeholder="Cédula (10) / 17 caract." maxlength="17"></td>
+                        <!-- ARCHIVO -->
                         <td><input type="text" id="reverso_archivo" onblur="validateArchivo(this)" class="ruled-input text-center text-xs font-bold" placeholder="000000" maxlength="6"></td>
                     </tr>
                 </tbody>
@@ -446,14 +464,14 @@
             <table class="msp-table">
                 <thead>
                     <tr class="msp-header-bg">
-                        <th colspan="6" class="text-left text-xs uppercase px-2 py-1">B. EVOLUCIÓN Y PRESCRIPCIONES</th>
+                        <th colspan="5" class="text-left text-xs uppercase px-2 py-1">B. EVOLUCIÓN Y PRESCRIPCIONES</th>
                     </tr>
                     <tr class="msp-subheader-bg text-center text-[10px]">
                         <th colspan="3" class="w-1/2 py-1">
                             1. EVOLUCIÓN
                             <div class="text-[8px] font-normal normal-case text-slate-700 tracking-tight">FIRMAR AL PIE DE CADA EVOLUCIÓN Y PRESCRIPCIÓN</div>
                         </th>
-                        <th colspan="3" class="w-1/2 py-1">
+                        <th colspan="2" class="w-1/2 py-1">
                             2. PRESCRIPCIONES
                             <div class="text-[7.5px] font-bold normal-case text-red-600 tracking-tight">REGISTRAR CON ROJO LA ADMINISTRACIÓN DE FÁRMACOS Y COLOCACIÓN DE DISPOSITIVOS MÉDICOS</div>
                         </th>
@@ -462,8 +480,8 @@
                         <th class="w-[65px]">FECHA<br><span class="font-normal text-[8px]">(aaaa-mm-dd)</span></th>
                         <th class="w-[50px]">HORA<br><span class="font-normal text-[8px]">(hh:mm)</span></th>
                         <th>NOTAS DE EVOLUCIÓN</th>
-                        <th class="w-[50%]">FARMACOTERAPIA E INDICACIONES<br><span class="font-normal text-[8px]">(Para enfermería y otro profesional de salud)</span></th>
-                        <th class="w-[65px] text-[7.5px]">ADMINISTR. FÁRMACOS DISPOSITIVO</th>
+                        <th class="w-[38%]">FARMACOTERAPIA E INDICACIONES<br><span class="font-normal text-[8px]">(Para enfermería y otro profesional de salud)</span></th>
+                        <th class="w-[70px] text-[7.5px]">ADMINISTR. FÁRMACOS DISPOSITIVO</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -508,45 +526,12 @@
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'msp-guamote-hcu';
         const firebaseConfig = typeof __firebase_config !== 'undefined' 
             ? JSON.parse(__firebase_config) 
-            : { apiKey: "demo", authDomain: "demo.firebaseapp.com", projectId: "demo-app" };
+            : null;
 
         let db = null;
         let auth = null;
         let activeUser = null;
         let isLocalUpdate = false;
-
-        try {
-            const app = initializeApp(firebaseConfig);
-            auth = getAuth(app);
-            db = getFirestore(app);
-
-            // Iniciar Sesión para Habilitar Firestore Multi-usuario
-            const initAuth = async () => {
-                try {
-                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                        await signInWithCustomToken(auth, __initial_auth_token);
-                    } else {
-                        await signInAnonymously(auth);
-                    }
-                } catch (authError) {
-                    console.warn("Autenticación no disponible o fallida, cambiando a modo local:", authError);
-                    updateSyncBadgeState(false, "Modo Local (Sin autenticación)");
-                }
-            };
-
-            initAuth();
-
-            onAuthStateChanged(auth, (user) => {
-                if (user) {
-                    activeUser = user;
-                    updateSyncBadgeState(true, `Sincronizado (ID: ${user.uid.slice(0,5)}...)`);
-                    listenToDocumentChanges();
-                }
-            });
-        } catch (e) {
-            console.warn("Firestore no configurado, operando en modo local.", e);
-            updateSyncBadgeState(false, "Modo Local (Sin red)");
-        }
 
         function updateSyncBadgeState(isOnline, text) {
             const badge = document.getElementById('sync-badge');
@@ -561,13 +546,49 @@
             }
         }
 
-        // Referencia del Documento Compartido
-        function getDocRef() {
-            if (!db) return null;
-            return doc(db, 'artifacts', appId, 'forms', 'form_hcu_005');
+        if (firebaseConfig && firebaseConfig.apiKey && firebaseConfig.apiKey !== "demo") {
+            try {
+                const app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+
+                const initAuth = async () => {
+                    try {
+                        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                            await signInWithCustomToken(auth, __initial_auth_token);
+                        } else {
+                            await signInAnonymously(auth);
+                        }
+                    } catch (authError) {
+                        console.warn("Autenticación no disponible:", authError);
+                        updateSyncBadgeState(false, "Modo Local");
+                    }
+                };
+
+                initAuth();
+
+                onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        activeUser = user;
+                        updateSyncBadgeState(true, `Sincronizado (ID: ${user.uid.slice(0,5)}...)`);
+                        listenToDocumentChanges();
+                    }
+                });
+            } catch (e) {
+                console.warn("Firestore no configurado, operando en modo local.", e);
+                updateSyncBadgeState(false, "Modo Local");
+            }
+        } else {
+            updateSyncBadgeState(false, "Modo Local");
         }
 
-        // 4) Escuchar cambios en Tiempo Real para MÚLTIPLES USUARIOS SIMULTÁNEOS
+        // Ruta estricta conforme a reglas de Firestore (/artifacts/{appId}/public/data/{collectionName}/{documentId})
+        function getDocRef() {
+            if (!db) return null;
+            return doc(db, 'artifacts', appId, 'public', 'data', 'forms', 'form_hcu_005');
+        }
+
+        // Escuchar cambios en Tiempo Real
         function listenToDocumentChanges() {
             const docRef = getDocRef();
             if (!docRef || !activeUser) return;
@@ -598,7 +619,7 @@
                 .catch((err) => { 
                     isLocalUpdate = false; 
                     console.warn("No se pudo sincronizar en la nube:", err.message);
-                    updateSyncBadgeState(false, "Modo Local (Sin permiso remoto)");
+                    updateSyncBadgeState(false, "Modo Local");
                 });
         };
     </script>
@@ -607,12 +628,9 @@
     <script>
         let activeTab = 'anverso';
 
-        // ---------------------------------------------------------------------
-        // RECOLECCIÓN Y APLICACIÓN DE DATOS PARA SINCRONIZACIÓN Y NUBE
-        // ---------------------------------------------------------------------
+        // Recolección y aplicación de datos
         window.collectFormData = function() {
             const data = {};
-            // Recolectar todos los campos con ID
             const inputs = document.querySelectorAll('input[id], textarea[id]');
             inputs.forEach(el => {
                 if (el.id) {
@@ -620,7 +638,6 @@
                 }
             });
 
-            // Recolectar Radio Buttons (Condición edad)
             const radioSelected = document.querySelector('input[name="condicion_edad_anverso"]:checked');
             data['condicion_edad_anverso'] = radioSelected ? radioSelected.value : '';
 
@@ -630,12 +647,11 @@
         window.applyDataToForm = function(data) {
             if (!data) return;
 
-            // Cargar valores a inputs y textareas
             Object.keys(data).forEach(key => {
                 if (key === 'condicion_edad_anverso') {
                     const val = data[key];
-                    const radio = document.querySelector(`input[name="condicion_edad_anverso"][value="${val}"]`);
-                    if (radio) radio.checked = true;
+                    const radios = document.querySelectorAll('input[name="condicion_edad_anverso"]');
+                    radios.forEach(r => { r.checked = (r.value === val); });
                 } else {
                     const el = document.getElementById(key);
                     if (el && el.value !== data[key]) {
@@ -648,8 +664,11 @@
         // Inicializar Fecha/Hora actual por defecto
         window.onload = function() {
             const now = new Date();
-            const dateStr = now.toISOString().split('T')[0];
-            const timeStr = now.toTimeString().split(' ')[0].substring(0,5);
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const dateStr = `${year}-${month}-${day}`;
+            const timeStr = now.toTimeString().split(' ')[0].substring(0, 5);
 
             if (!document.getElementById('anverso_fecha').value) {
                 document.getElementById('anverso_fecha').value = dateStr;
@@ -697,7 +716,7 @@
             }
         }
 
-        // 5) Todo texto a Mayúscula en tiempo real
+        // Todo texto a Mayúscula en tiempo real
         function forceUpper(element) {
             const start = element.selectionStart;
             const end = element.selectionEnd;
@@ -705,7 +724,20 @@
             if (start !== null) element.setSelectionRange(start, end);
         }
 
-        // Modal de Alertas (sin alert())
+        // Restringir a UNA SOLA PALABRA en mayúsculas (Primer Apellido y Primer Nombre)
+        function enforceSingleWord(element) {
+            const start = element.selectionStart;
+            // Convertir a mayúsculas y eliminar cualquier espacio o salto de línea para garantizar 1 sola palabra
+            const sanitized = element.value.toUpperCase().replace(/\s+/g, '');
+            const diff = element.value.length - sanitized.length;
+            element.value = sanitized;
+            if (start !== null) {
+                const newPos = Math.max(0, start - diff);
+                element.setSelectionRange(newPos, newPos);
+            }
+        }
+
+        // Modal de Alertas
         function showError(msg) {
             document.getElementById('modal-message').innerText = msg;
             document.getElementById('error-modal').classList.remove('hidden');
@@ -713,6 +745,29 @@
 
         function closeModal() {
             document.getElementById('error-modal').classList.add('hidden');
+        }
+
+        // Modal de Confirmación de Limpieza (reemplaza window.confirm)
+        function openClearModal() {
+            document.getElementById('confirm-clear-modal').classList.remove('hidden');
+        }
+
+        function closeClearModal() {
+            document.getElementById('confirm-clear-modal').classList.add('hidden');
+        }
+
+        function executeClearData() {
+            const inputs = document.querySelectorAll('input[type="text"], textarea');
+            inputs.forEach(i => {
+                i.value = '';
+                i.classList.remove('bg-red-100');
+            });
+
+            const radios = document.querySelectorAll('input[type="radio"]');
+            radios.forEach(r => r.checked = false);
+
+            closeClearModal();
+            if (window.saveDataToCloud) window.saveDataToCloud();
         }
 
         // VALIDACIÓN DE CÉDULA ECUATORIANA (Algoritmo Módulo 10)
@@ -742,11 +797,14 @@
             return resultado === verificador;
         }
 
-        // 9) NÚMERO DE HISTORIA CLÍNICA ÚNICA: Cédula válida o Cadena de longitud exacta de 17 caracteres
+        // NÚMERO DE HISTORIA CLÍNICA ÚNICA: Cédula válida o Cadena de longitud exacta de 17 caracteres
         function validateHCU(input) {
             forceUpper(input);
             const val = input.value.trim();
-            if (!val) return;
+            if (!val) {
+                input.classList.remove('bg-red-100');
+                return;
+            }
 
             const isValidID = validEcuadorianID(val);
             const isValidLength17 = val.length === 17;
@@ -759,25 +817,30 @@
             }
         }
 
-        // 10) NÚMERO DE ARCHIVO: 6 dígitos permitiendo ceros a la izquierda
+        // NÚMERO DE ARCHIVO: 6 dígitos permitiendo ceros a la izquierda
         function validateArchivo(input) {
             const val = input.value.trim();
-            if (!val) return;
+            if (!val) {
+                input.classList.remove('bg-red-100');
+                return;
+            }
 
             if (!/^\d{1,6}$/.test(val)) {
-                showError("NÚMERO DE ARCHIVO INVÁLIDO: Debe ser un número numérico de máximo 6 dígitos.");
+                showError("NÚMERO DE ARCHIVO INVÁLIDO: Debe ser un valor numérico de máximo 6 dígitos.");
                 input.classList.add('bg-red-100');
             } else {
-                // Pad con ceros al inicio a 6 dígitos si se desea o mantener formato
                 input.value = val.padStart(6, '0');
                 input.classList.remove('bg-red-100');
             }
         }
 
-        // 11) No. HOJA y EDAD: Solo valores numéricos
+        // No. HOJA y EDAD: Solo valores numéricos
         function validateNumeric(input) {
             const val = input.value.trim();
-            if (!val) return;
+            if (!val) {
+                input.classList.remove('bg-red-100');
+                return;
+            }
 
             if (!/^\d+$/.test(val)) {
                 showError("CAMPO NUMÉRICO: Solo se permiten números enteros en este casillero.");
@@ -788,11 +851,14 @@
             }
         }
 
-        // 12) SEXO: Valor M o F exclusivamente
+        // SEXO: Valor M o F exclusivamente
         function validateSexo(input) {
             forceUpper(input);
             const val = input.value.trim();
-            if (!val) return;
+            if (!val) {
+                input.classList.remove('bg-red-100');
+                return;
+            }
 
             if (val !== 'M' && val !== 'F') {
                 showError("SEXO INVÁLIDO: Solo se permite ingresar el carácter 'M' (Masculino) o 'F' (Femenino).");
@@ -803,25 +869,10 @@
             }
         }
 
-        // 1) Limpiar la información ingresada
-        function confirmClearData() {
-            if (window.confirm("¿Está seguro de limpiar todos los datos de los formularios ANVERSO y REVERSO?")) {
-                const inputs = document.querySelectorAll('input[type="text"], textarea');
-                inputs.forEach(i => i.value = '');
-
-                const radios = document.querySelectorAll('input[type="radio"]');
-                radios.forEach(r => r.checked = false);
-
-                if (window.saveDataToCloud) window.saveDataToCloud();
-            }
-        }
-
-        // 3) Descargar automáticamente en PDF formato A4
+        // Descargar automáticamente en PDF formato A4
         function downloadPDF() {
-            // Mostrar temporalmente la pestaña activa y generar el reporte completo
             const currentTab = activeTab;
             const targetElement = document.getElementById(`tab-${currentTab}`);
-
             const isAnverso = currentTab === 'anverso';
 
             const opt = {
@@ -835,7 +886,6 @@
                     : { mode: ['css', 'legacy'] }
             };
 
-            // Para ANVERSO forzar a 1 sola página exacta en html2pdf
             if (isAnverso) {
                 html2pdf().set(opt).from(targetElement).toPdf().get('jspdf').then(function (pdf) {
                     const totalPages = pdf.internal.getNumberOfPages();
@@ -847,6 +897,6 @@
                 html2pdf().set(opt).from(targetElement).save();
             }
         }
-
-        // Recolectar datos para sincronización
-<!-- ... existing code -->
+    </script>
+</body>
+</html>
