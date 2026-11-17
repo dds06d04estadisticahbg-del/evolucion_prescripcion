@@ -50,7 +50,6 @@
         }
 
         /* Campos de texto sin subrayado y en MAYÚSCULAS */
-
         .ruled-input {
             width: 100%;
             background: transparent;
@@ -68,7 +67,6 @@
         }
 
         /* Textareas con líneas horizontales de renglón */
-
         .ruled-textarea {
             width: 100%;
             height: 100%;
@@ -105,7 +103,7 @@
             justify-content: center;
         }
 
-        /* Estilos específicos para la hoja A4 */
+        /* Estilos específicos para la hoja A4 - Base 9px */
         .a4-page {
             width: 210mm;
             min-width: 210mm;
@@ -115,6 +113,11 @@
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15);
             position: relative;
             box-sizing: border-box;
+            font-size: 9px;
+        }
+
+        .a4-page * {
+            font-size: 9px;
         }
 
         /* ANVERSO estrictamente a 1 sola hoja A4 */
@@ -156,6 +159,7 @@
                 margin: 0 !important;
                 width: 210mm !important;
                 padding: 6mm !important;
+                font-size: 9px !important;
             }
 
             #tab-anverso {
@@ -340,11 +344,11 @@
             <table class="msp-table mb-1">
                 <thead>
                     <tr class="msp-header-bg">
-                        <th colspan="6" class="text-left text-[9px] uppercase px-2 py-1">A. DATOS DEL ESTABLECIMIENTO Y USUARIO / PACIENTE</th>
+                        <th colspan="6" class="text-left text-[10px] uppercase px-2 py-1">A. DATOS DEL ESTABLECIMIENTO Y USUARIO / PACIENTE</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="msp-subheader-bg text-center text-[8px]">
+                    <tr class="msp-subheader-bg text-center text-[9px]">
                         <td class="w-1/6">INSTITUCIÓN DEL SISTEMA</td>
                         <td class="w-1/12">UNICÓDIGO</td>
                         <td class="w-1/4">ESTABLECIMIENTO DE SALUD</td>
@@ -352,10 +356,10 @@
                         <td class="w-1/6">NÚMERO DE ARCHIVO</td>
                         <td class="w-1/12">No. HOJA</td>
                     </tr>
-                    <tr class="text-center font-bold">
-                        <td id="anverso_institucion" class="bg-slate-100 text-slate-800 text-[8px]">MINISTERIO DE SALUD PÚBLICA</td>
-                        <td id="anverso_unicodigo" class="bg-slate-100 text-slate-800 text-[8px]">000473</td>
-                        <td id="anverso_establecimiento" class="bg-slate-100 text-slate-800 text-[8px]">HOSPITAL BÁSICO DE GUAMOTE</td>
+                    <tr class="text-center font-bold text-[9px]">
+                        <td id="anverso_institucion" class="bg-slate-100 text-slate-800 text-[9px]">MINISTERIO DE SALUD PÚBLICA</td>
+                        <td id="anverso_unicodigo" class="bg-slate-100 text-slate-800 text-[9px]">000473</td>
+                        <td id="anverso_establecimiento" class="bg-slate-100 text-slate-800 text-[9px]">HOSPITAL BÁSICO DE GUAMOTE</td>
                         <td>
                             <input type="text" id="anverso_hcu" oninput="forceUpper(this); syncHeaderToReverso('hcu', this.value)" onblur="validateHCU(this)" class="ruled-input text-center text-[9px] font-bold" placeholder="Cédula (10) / 17 caract." maxlength="17">
                         </td>
@@ -372,7 +376,7 @@
             <!-- Fila 2 Paciente -->
             <table class="msp-table mb-2">
                 <tbody>
-                    <tr class="msp-subheader-bg text-center text-[8px]">
+                    <tr class="msp-subheader-bg text-center text-[9px]">
                         <td class="w-1/5">PRIMER APELLIDO</td>
                         <td class="w-1/5">SEGUNDO APELLIDO</td>
                         <td class="w-1/5">PRIMER NOMBRE</td>
@@ -380,39 +384,39 @@
                         <td class="w-1/12">SEXO</td>
                         <td class="w-1/12">EDAD</td>
                         <td class="w-1/6">CONDICIÓN EDAD<br>
-                            <span class="inline-flex gap-2 font-normal text-[8px]">
-                                <span>H</span><span>D</span><span>M</span><span>A</span>
+                            <span class="inline-flex gap-2 font-normal text-[7.5px]">
+                                
                             </span>
                         </td>
                     </tr>
-                    <tr class="text-center">
-                        <td><input type="text" id="anverso_p_apellido" class="ruled-input text-center" oninput="enforceSingleWord(this); syncHeaderToReverso('p_apellido', this.value)"></td>
-                        <td><input type="text" id="anverso_s_apellido" class="ruled-input text-center" oninput="forceUpper(this)"></td>
-                        <td><input type="text" id="anverso_p_nombre" class="ruled-input text-center" oninput="enforceSingleWord(this); syncHeaderToReverso('p_nombre', this.value)"></td>
-                        <td><input type="text" id="anverso_s_nombre" class="ruled-input text-center" oninput="forceUpper(this)"></td>
+                    <tr class="text-center text-[9px]">
+                        <td><input type="text" id="anverso_p_apellido" class="ruled-input text-center text-[9px]" oninput="enforceSingleWord(this); syncHeaderToReverso('p_apellido', this.value)"></td>
+                        <td><input type="text" id="anverso_s_apellido" class="ruled-input text-center text-[9px]" oninput="forceUpper(this)"></td>
+                        <td><input type="text" id="anverso_p_nombre" class="ruled-input text-center text-[9px]" oninput="enforceSingleWord(this); syncHeaderToReverso('p_nombre', this.value)"></td>
+                        <td><input type="text" id="anverso_s_nombre" class="ruled-input text-center text-[9px]" oninput="forceUpper(this)"></td>
                         <td>
-                            <input type="text" id="anverso_sexo" oninput="forceUpper(this)" onblur="validateSexo(this)" class="ruled-input text-center font-bold" placeholder="M/F" maxlength="1">
+                            <input type="text" id="anverso_sexo" oninput="forceUpper(this)" onblur="validateSexo(this)" class="ruled-input text-center font-bold text-[9px]" placeholder="M/F" maxlength="1">
                         </td>
                         <td>
-                            <input type="text" id="anverso_edad" oninput="syncHeaderToReverso('edad', this.value)" onblur="validateNumeric(this)" class="ruled-input text-center font-bold" placeholder="0" maxlength="3">
+                            <input type="text" id="anverso_edad" oninput="syncHeaderToReverso('edad', this.value)" onblur="validateNumeric(this)" class="ruled-input text-center font-bold text-[9px]" placeholder="0" maxlength="3">
                         </td>
                         <td>
                             <div class="flex justify-around items-center py-1">
                                 <label class="text-[9px] cursor-pointer flex flex-col items-center">
                                     <input type="radio" name="condicion_edad_anverso" value="H" class="w-3.5 h-3.5 accent-indigo-600">
-                                    <span class="font-bold">H</span>
+                                    <span class="font-bold text-[9px]">H</span>
                                 </label>
                                 <label class="text-[9px] cursor-pointer flex flex-col items-center">
                                     <input type="radio" name="condicion_edad_anverso" value="D" class="w-3.5 h-3.5 accent-indigo-600">
-                                    <span class="font-bold">D</span>
+                                    <span class="font-bold text-[9px]">D</span>
                                 </label>
                                 <label class="text-[9px] cursor-pointer flex flex-col items-center">
                                     <input type="radio" name="condicion_edad_anverso" value="M" class="w-3.5 h-3.5 accent-indigo-600">
-                                    <span class="font-bold">M</span>
+                                    <span class="font-bold text-[9px]">M</span>
                                 </label>
                                 <label class="text-[9px] cursor-pointer flex flex-col items-center">
                                     <input type="radio" name="condicion_edad_anverso" value="A" class="w-3.5 h-3.5 accent-indigo-600">
-                                    <span class="font-bold">A</span>
+                                    <span class="font-bold text-[9px]">A</span>
                                 </label>
                             </div>
                         </td>
@@ -424,23 +428,23 @@
             <table class="msp-table">
                 <thead>
                     <tr class="msp-header-bg">
-                        <th colspan="5" class="text-left text-[9px] uppercase px-2 py-1">B. EVOLUCIÓN Y PRESCRIPCIONES</th>
+                        <th colspan="5" class="text-left text-[10px] uppercase px-2 py-1">B. EVOLUCIÓN Y PRESCRIPCIONES</th>
                     </tr>
                     <tr class="msp-subheader-bg text-center text-[9px]">
                         <th colspan="3" class="w-1/2 py-1">
                             1. EVOLUCIÓN
-                            <div class="text-[8px] font-normal normal-case text-slate-700 tracking-tight">FIRMAR AL PIE DE CADA EVOLUCIÓN Y PRESCRIPCIÓN</div>
+                            <div class="text-[7.5px] font-normal normal-case text-slate-700 tracking-tight">FIRMAR AL PIE DE CADA EVOLUCIÓN Y PRESCRIPCIÓN</div>
                         </th>
                         <th colspan="2" class="w-1/2 py-1">
                             2. PRESCRIPCIONES
                             <div class="text-[7.5px] font-bold normal-case text-red-600 tracking-tight">REGISTRAR CON ROJO LA ADMINISTRACIÓN DE FÁRMACOS Y COLOCACIÓN DE DISPOSITIVOS MÉDICOS</div>
                         </th>
                     </tr>
-                    <tr class="bg-slate-100 text-[8px] text-center">
-                        <th class="w-[70px]">FECHA<br><span class="font-normal text-[8px]">(aaaa-mm-dd)</span></th>
-                        <th class="w-[42px]">HORA<br><span class="font-normal text-[8px]">(hh:mm)</span></th>
-                        <th class="w-[50%]">NOTAS DE EVOLUCIÓN</th>
-                        <th class="w-[40%]">FARMACOTERAPIA E INDICACIONES<br><span class="font-normal text-[7.5px]">(Para enfermería y otro profesional de salud)</span></th>
+                    <tr class="bg-slate-100 text-[9px] text-center">
+                        <th class="w-[60px] text-[10px]">FECHA<br><span class="font-normal text-[9px]">(aaaa-mm-dd)</span></th>
+                        <th class="w-[32px] text-[10px]">HORA<br><span class="font-normal text-[9px]">(hh:mm)</span></th>
+                        <th class="w-[50%] text-[9px]">NOTAS DE EVOLUCIÓN</th>
+                        <th class="w-[40%] text-[9px]">FARMACOTERAPIA E INDICACIONES<br><span class="font-normal text-[7.5px]">(Para enfermería y otro profesional de salud)</span></th>
                         <th class="w-[0.5px] text-[7.5px] leading-tight">ADMINISTR.<br>FÁRMACOS<br>DISPOSITIVO</th>
                     </tr>
                 </thead>
@@ -453,13 +457,13 @@
                             <input type="time" id="anverso_hora" class="w-full text-[9px] font-mono border-none outline-none uppercase bg-transparent">
                         </td>
                         <td class="align-top p-0">
-                            <textarea id="anverso_notas" class="ruled-textarea" oninput="forceUpper(this)" placeholder="Escriba la nota de evolución aquí..."></textarea>
+                            <textarea id="anverso_notas" class="ruled-textarea text-[9px]" oninput="forceUpper(this)" placeholder="Escriba la nota de evolución aquí..."></textarea>
                         </td>
                         <td class="align-top p-0">
-                            <textarea id="anverso_prescripciones" class="ruled-textarea" oninput="forceUpper(this)" placeholder="Escriba las indicaciones y farmacoterapia aquí..."></textarea>
+                            <textarea id="anverso_prescripciones" class="ruled-textarea text-[9px]" oninput="forceUpper(this)" placeholder="Escriba las indicaciones y farmacoterapia aquí..."></textarea>
                         </td>
                         <td class="align-top p-0">
-                            <textarea id="anverso_administracion" class="ruled-textarea text-red-600 font-bold" oninput="forceUpper(this)" placeholder="Reg. rojo..."></textarea>
+                            <textarea id="anverso_administracion" class="ruled-textarea text-red-600 font-bold text-[9px]" oninput="forceUpper(this)" placeholder="Reg. rojo..."></textarea>
                         </td>
                     </tr>
                 </tbody>
@@ -467,8 +471,8 @@
 
             <!-- Pie de Hoja Anverso -->
             <div class="mt-2 flex justify-between items-center text-[9px] text-slate-700 font-mono">
-                <div>SNS-MSP / HCU-form.005/2021</div>
-                <div class="font-bold">EVOLUCIÓN Y PRESCRIPCIONES (1)</div>
+                <div class="text-[9px]">SNS-MSP / HCU-form.005/2021</div>
+                <div class="font-bold text-[9px]">EVOLUCIÓN Y PRESCRIPCIONES (1)</div>
             </div>
         </div>
 
@@ -485,17 +489,17 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="msp-subheader-bg text-center text-[8px]">
+                    <tr class="msp-subheader-bg text-center text-[9px]">
                         <td class="w-1/4">PRIMER APELLIDO</td>
                         <td class="w-1/4">PRIMER NOMBRE</td>
                         <td class="w-1/12">EDAD</td>
                         <td class="w-1/3">NÚMERO DE HISTORIA CLÍNICA ÚNICA</td>
                         <td class="w-1/6">NÚMERO DE ARCHIVO</td>
                     </tr>
-                    <tr class="text-center">
-                        <td><input type="text" id="reverso_p_apellido" class="ruled-input text-center" oninput="enforceSingleWord(this)"></td>
-                        <td><input type="text" id="reverso_p_nombre" class="ruled-input text-center" oninput="enforceSingleWord(this)"></td>
-                        <td><input type="text" id="reverso_edad" onblur="validateNumeric(this)" class="ruled-input text-center font-bold" placeholder="0" maxlength="3"></td>
+                    <tr class="text-center text-[9px]">
+                        <td><input type="text" id="reverso_p_apellido" class="ruled-input text-center text-[9px]" oninput="enforceSingleWord(this)"></td>
+                        <td><input type="text" id="reverso_p_nombre" class="ruled-input text-center text-[9px]" oninput="enforceSingleWord(this)"></td>
+                        <td><input type="text" id="reverso_edad" onblur="validateNumeric(this)" class="ruled-input text-center font-bold text-[9px]" placeholder="0" maxlength="3"></td>
                         <td><input type="text" id="reverso_hcu" oninput="forceUpper(this)" onblur="validateHCU(this)" class="ruled-input text-center text-[9px] font-bold" placeholder="Cédula (10) / 17 caract." maxlength="17"></td>
                         <td><input type="text" id="reverso_archivo" onblur="validateArchivo(this)" class="ruled-input text-center text-[9px] font-bold" placeholder="000000" maxlength="6"></td>
                     </tr>
@@ -511,18 +515,18 @@
                     <tr class="msp-subheader-bg text-center text-[9px]">
                         <th colspan="3" class="w-1/2 py-1">
                             1. EVOLUCIÓN
-                            <div class="text-[8px] font-normal normal-case text-slate-700 tracking-tight">FIRMAR AL PIE DE CADA EVOLUCIÓN Y PRESCRIPCIÓN</div>
+                            <div class="text-[9px] font-normal normal-case text-slate-700 tracking-tight">FIRMAR AL PIE DE CADA EVOLUCIÓN Y PRESCRIPCIÓN</div>
                         </th>
                         <th colspan="2" class="w-1/2 py-1">
                             2. PRESCRIPCIONES
                             <div class="text-[7.5px] font-bold normal-case text-red-600 tracking-tight">REGISTRAR CON ROJO LA ADMINISTRACIÓN DE FÁRMACOS Y COLOCACIÓN DE DISPOSITIVOS MÉDICOS</div>
                         </th>
                     </tr>
-                    <tr class="bg-slate-100 text-[8px] text-center">
-                        <th class="w-[70px]">FECHA<br><span class="font-normal text-[8px]">(aaaa-mm-dd)</span></th>
-                        <th class="w-[42px]">HORA<br><span class="font-normal text-[8px]">(hh:mm)</span></th>
-                        <th class="w-[50%]">NOTAS DE EVOLUCIÓN</th>
-                        <th class="w-[40%]">FARMACOTERAPIA E INDICACIONES<br><span class="font-normal text-[7.5px]">(Para enfermería y otro profesional de salud)</span></th>
+                    <tr class="bg-slate-100 text-[9px] text-center">
+                        <th class="w-[60px] text-[10px]">FECHA<br><span class="font-normal text-[9px]">(aaaa-mm-dd)</span></th>
+                        <th class="w-[32px] text-[10px]">HORA<br><span class="font-normal text-[9px]">(hh:mm)</span></th>
+                        <th class="w-[50%] text-[9px]">NOTAS DE EVOLUCIÓN</th>
+                        <th class="w-[40%] text-[9px]">FARMACOTERAPIA E INDICACIONES<br><span class="font-normal text-[7.5px]">(Para enfermería y otro profesional de salud)</span></th>
                         <th class="w-[0.5px] text-[7.5px] leading-tight">ADMINISTR.<br>FÁRMACOS<br>DISPOSITIVO</th>
                     </tr>
                 </thead>
@@ -535,13 +539,13 @@
                             <input type="time" id="reverso_hora" class="w-full text-[9px] font-mono border-none outline-none uppercase bg-transparent">
                         </td>
                         <td class="align-top p-0">
-                            <textarea id="reverso_notas" class="ruled-textarea" oninput="forceUpper(this)" placeholder="Escriba la nota de evolución aquí..."></textarea>
+                            <textarea id="reverso_notas" class="ruled-textarea text-[9px]" oninput="forceUpper(this)" placeholder="Escriba la nota de evolución aquí..."></textarea>
                         </td>
                         <td class="align-top p-0">
-                            <textarea id="reverso_prescripciones" class="ruled-textarea" oninput="forceUpper(this)" placeholder="Escriba las indicaciones y farmacoterapia aquí..."></textarea>
+                            <textarea id="reverso_prescripciones" class="ruled-textarea text-[9px]" oninput="forceUpper(this)" placeholder="Escriba las indicaciones y farmacoterapia aquí..."></textarea>
                         </td>
                         <td class="align-top p-0">
-                            <textarea id="reverso_administracion" class="ruled-textarea text-red-600 font-bold" oninput="forceUpper(this)" placeholder="Reg. rojo..."></textarea>
+                            <textarea id="reverso_administracion" class="ruled-textarea text-red-600 font-bold text-[9px]" oninput="forceUpper(this)" placeholder="Reg. rojo..."></textarea>
                         </td>
                     </tr>
                 </tbody>
@@ -549,8 +553,8 @@
 
             <!-- Pie de Hoja Reverso -->
             <div class="mt-2 flex justify-between items-center text-[9px] text-slate-700 font-mono">
-                <div>SNS-MSP / HCU-form.005/2021</div>
-                <div class="font-bold">EVOLUCIÓN Y PRESCRIPCIONES (2)</div>
+                <div class="text-[9px]">SNS-MSP / HCU-form.005/2021</div>
+                <div class="font-bold text-[9px]">EVOLUCIÓN Y PRESCRIPCIONES (2)</div>
             </div>
         </div>
 
@@ -940,12 +944,13 @@
             const targetElement = document.getElementById(`tab-${currentTab}`);
             const isAnverso = currentTab === 'anverso';
             const hcu = document.getElementById('anverso_hcu').value.trim() || 'SIN_HCU';
+            const filename = `HCU_005_${hcu}_${currentTab.toUpperCase()}.pdf`;
 
             const opt = {
                 margin:       [0, 0, 0, 0],
-                filename:     `HCU_005_${hcu}_${currentTab.toUpperCase()}.pdf`,
+                filename:     filename,
                 image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true, scrollY: 0 },
+                html2canvas:  { scale: 2, useCORS: true, scrollY: 0, scrollX: 0 },
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
                 pagebreak:    isAnverso 
                     ? { mode: 'avoid-all' } 
@@ -953,12 +958,30 @@
             };
 
             if (isAnverso) {
-                html2pdf().set(opt).from(targetElement).toPdf().get('jspdf').then(function (pdf) {
+                // Ajustar temporalmente altura de textareas para evitar desbordamiento de página en A4
+                const textareas = targetElement.querySelectorAll('.ruled-textarea');
+                const prevHeights = [];
+                textareas.forEach((ta, idx) => {
+                    prevHeights[idx] = { min: ta.style.minHeight, max: ta.style.maxHeight, h: ta.style.height };
+                    ta.style.minHeight = '580px';
+                    ta.style.maxHeight = '580px';
+                    ta.style.height = '580px';
+                });
+
+                html2pdf().set(opt).from(targetElement).toPdf().get('pdf').then(function (pdf) {
                     const totalPages = pdf.internal.getNumberOfPages();
                     for (let i = totalPages; i > 1; i--) {
                         pdf.deletePage(i);
                     }
-                }).save();
+                    pdf.save(filename);
+                }).finally(() => {
+                    // Restaurar dimensiones originales en pantalla
+                    textareas.forEach((ta, idx) => {
+                        ta.style.minHeight = prevHeights[idx].min;
+                        ta.style.maxHeight = prevHeights[idx].max;
+                        ta.style.height = prevHeights[idx].h;
+                    });
+                });
             } else {
                 html2pdf().set(opt).from(targetElement).save();
             }
