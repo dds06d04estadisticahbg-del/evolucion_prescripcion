@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EVOLUCIÓN Y PRESCRIPCIÓN - MSP</title>
+    <title>EVOLUCIÓN Y PRESCRIPCIÓN - MSP (HCU-form.005)</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- html2pdf.js para exportar PDF -->
@@ -18,6 +18,8 @@
         body {
             font-family: 'Roboto', sans-serif;
             background-color: #f1f5f9;
+            margin: 0;
+            padding: 0;
         }
 
         /* Estilo de la tabla e insumos MSP */
@@ -30,22 +32,25 @@
         .msp-table th, .msp-table td {
             border: 1px solid #1e293b;
             padding: 2px 4px;
-            font-size: 11px;
+            font-size: 9px;
         }
 
         .msp-header-bg {
-            background-color: #c7d2fe; /* Azul violeta claro pastel según formulario original */
+            background-color: #c7d2fe; /* Azul violeta claro pastel */
             color: #0f172a;
             font-weight: bold;
+            font-size: 9px;
         }
 
         .msp-subheader-bg {
             background-color: #dcfce7; /* Verde menta claro pastel */
             color: #0f172a;
             font-weight: bold;
+            font-size: 9px;
         }
 
         /* Campos de texto sin subrayado y en MAYÚSCULAS */
+
         .ruled-input {
             width: 100%;
             background: transparent;
@@ -54,16 +59,21 @@
             text-transform: uppercase;
             text-decoration: none;
             font-family: 'Roboto Mono', monospace;
-            font-size: 12px;
+            font-size: 9px;
             color: #000;
         }
 
-        /* Textareas con líneas horizontales de renglón y texto sin subrayado */
+        .ruled-input:focus {
+            background-color: rgba(199, 210, 254, 0.25);
+        }
+
+        /* Textareas con líneas horizontales de renglón */
+
         .ruled-textarea {
             width: 100%;
             height: 100%;
-            min-height: 680px;
-            max-height: 720px;
+            min-height: 660px;
+            max-height: 700px;
             background: repeating-linear-gradient(
                 transparent,
                 transparent 23px,
@@ -75,21 +85,34 @@
             text-transform: uppercase;
             text-decoration: none;
             font-family: 'Roboto Mono', monospace;
-            font-size: 12px;
+            font-size: 9px;
             resize: none;
             color: #000;
             padding: 0 4px;
             overflow: hidden;
         }
 
+        .ruled-textarea:focus {
+            background-color: rgba(248, 250, 252, 0.6);
+        }
+
+        /* Contenedor adaptable para Google Sites iframe */
+        .sheet-scroll-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            padding: 12px 8px;
+            display: flex;
+            justify-content: center;
+        }
+
         /* Estilos específicos para la hoja A4 */
         .a4-page {
             width: 210mm;
+            min-width: 210mm;
             min-height: 297mm;
             padding: 8mm;
-            margin: 0 auto;
             background: white;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15);
             position: relative;
             box-sizing: border-box;
         }
@@ -103,7 +126,7 @@
             page-break-inside: avoid;
         }
 
-        /* REVERSO permite múltiples hojas si crece */
+        /* REVERSO permite crecimiento si es necesario */
         #tab-reverso {
             height: auto;
             min-height: 297mm;
@@ -123,6 +146,11 @@
             .no-print {
                 display: none !important;
             }
+            .sheet-scroll-wrapper {
+                overflow: visible !important;
+                padding: 0 !important;
+                display: block !important;
+            }
             .a4-page {
                 box-shadow: none;
                 margin: 0 !important;
@@ -130,7 +158,6 @@
                 padding: 6mm !important;
             }
 
-            /* Forzar ANVERSO a 1 sola página exacta */
             #tab-anverso {
                 height: 285mm !important;
                 max-height: 285mm !important;
@@ -153,7 +180,6 @@
                 overflow: hidden !important;
             }
 
-            /* Permite que REVERSO fluya a varias hojas al imprimir */
             #tab-reverso {
                 height: auto !important;
                 max-height: none !important;
@@ -161,7 +187,7 @@
                 page-break-after: auto !important;
             }
             #tab-reverso .ruled-textarea {
-                min-height: 680px !important;
+                min-height: 660px !important;
                 height: auto !important;
                 max-height: none !important;
                 background: repeating-linear-gradient(
@@ -181,68 +207,106 @@
         }
     </style>
 </head>
-<body class="min-h-screen pb-12">
+<body class="min-h-screen pb-10">
 
     <!-- BARRA SUPERIOR DE CONTROL -->
-    <header class="no-print bg-slate-900 text-white shadow-md sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
+    <header class="no-print bg-slate-900 text-white shadow-md sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
             <div class="flex items-center space-x-3">
                 <i class="fa-solid fa-file-medical text-cyan-400 text-2xl"></i>
                 <div>
-                    <h1 class="font-bold text-lg leading-tight">HISTORIA CLÍNICA ÚNICA - MSP ECUADOR</h1>
-                    <p class="text-xs text-slate-400">Formulario HCU-form.005/2021 | Guamote</p>
+                    <h1 class="font-bold text-base sm:text-lg leading-tight">HISTORIA CLÍNICA ÚNICA - MSP ECUADOR</h1>
+                    <p class="text-xs text-slate-400">Formulario HCU-form.005/2021 | Hospital Básico de Guamote</p>
                 </div>
             </div>
 
             <!-- Botones de Acción -->
             <div class="flex items-center gap-2 flex-wrap">
-                <!-- Estado de Sincronización Multi-usuario -->
-                <div id="sync-badge" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs bg-slate-800 text-amber-400 border border-slate-700 mr-2">
-                    <i class="fa-solid fa-users text-xs"></i>
-                    <span id="sync-text">Conectando colaborativo...</span>
-                </div>
+                <!-- Estado de Conexión Google Sheets -->
+                <button type="button" onclick="openConfigModal()" id="sheets-status-btn" title="Configurar URL de Google Apps Script" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs bg-slate-800 hover:bg-slate-700 text-amber-400 border border-slate-600 transition">
+                    <i class="fa-solid fa-table"></i>
+                    <span id="sheets-status-text">Configurar Google Sheet</span>
+                </button>
+
+                <!-- Botón Guardar en Google Sheets -->
+                <button type="button" id="btn-save-sheets" onclick="saveToGoogleSheets()" class="px-3.5 py-1.5 bg-cyan-600 hover:bg-cyan-500 text-white text-xs sm:text-sm font-bold rounded-lg transition flex items-center gap-2 shadow">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                    <span>Guardar en Sheets</span>
+                </button>
 
                 <!-- Botón Limpiar -->
-                <button type="button" onclick="openClearModal()" class="px-3.5 py-1.5 bg-red-600 hover:bg-red-700 text-white text-sm font-semibold rounded-lg transition flex items-center gap-2 shadow">
-                    <i class="fa-solid fa-trash-can"></i> Limpiar
+                <button type="button" onclick="openClearModal()" class="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs sm:text-sm font-semibold rounded-lg transition flex items-center gap-2 shadow">
+                    <i class="fa-solid fa-trash-can"></i>
+                    <span class="hidden sm:inline">Limpiar</span>
                 </button>
 
                 <!-- Botón Imprimir A4 -->
-                <button type="button" onclick="window.print()" class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg transition flex items-center gap-2 shadow">
-                    <i class="fa-solid fa-print"></i> Imprimir A4
+                <button type="button" onclick="safePrint()" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-semibold rounded-lg transition flex items-center gap-2 shadow">
+                    <i class="fa-solid fa-print"></i>
+                    <span class="hidden sm:inline">Imprimir</span>
                 </button>
 
                 <!-- Botón Descargar PDF A4 -->
-                <button type="button" onclick="downloadPDF()" class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-lg transition flex items-center gap-2 shadow">
-                    <i class="fa-solid fa-file-pdf"></i> Descargar PDF
+                <button type="button" onclick="downloadPDF()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-semibold rounded-lg transition flex items-center gap-2 shadow">
+                    <i class="fa-solid fa-file-pdf"></i>
+                    <span>PDF</span>
                 </button>
             </div>
         </div>
 
         <!-- PESTAÑAS ANVERSO Y REVERSO -->
         <div class="bg-slate-800 border-t border-slate-700">
-            <div class="max-w-7xl mx-auto flex">
-                <button type="button" id="tab-anverso-btn" onclick="switchTab('anverso')" class="px-6 py-2.5 font-bold text-sm border-b-2 border-cyan-400 text-cyan-400 bg-slate-900/50 flex items-center gap-2">
+            <div class="max-w-7xl mx-auto flex overflow-x-auto">
+                <button type="button" id="tab-anverso-btn" onclick="switchTab('anverso')" class="px-5 py-2.5 font-bold text-xs sm:text-sm border-b-2 border-cyan-400 text-cyan-400 bg-slate-900/50 flex items-center gap-2 whitespace-nowrap">
                     <i class="fa-regular fa-copy"></i> 1. ANVERSO (EVOLUCIÓN Y PRESCRIPCIÓN 1)
                 </button>
-                <button type="button" id="tab-reverso-btn" onclick="switchTab('reverso')" class="px-6 py-2.5 font-semibold text-sm text-slate-400 hover:text-white border-b-2 border-transparent hover:border-slate-500 flex items-center gap-2">
+                <button type="button" id="tab-reverso-btn" onclick="switchTab('reverso')" class="px-5 py-2.5 font-semibold text-xs sm:text-sm text-slate-400 hover:text-white border-b-2 border-transparent hover:border-slate-500 flex items-center gap-2 whitespace-nowrap">
                     <i class="fa-regular fa-file"></i> 2. REVERSO (EVOLUCIÓN Y PRESCRIPCIÓN 2)
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- MODAL DE ERROR DE VALIDACIÓN -->
-    <div id="error-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 no-print">
-        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 text-center border-t-4 border-red-500">
-            <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4 text-red-600">
-                <i class="fa-solid fa-triangle-exclamation text-xl"></i>
+    <!-- MODAL DE NOTIFICACIÓN (ERRORES Y ÉXITO) -->
+    <div id="feedback-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 no-print">
+        <div id="feedback-modal-card" class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 text-center border-t-4 border-red-500">
+            <div id="feedback-icon-bg" class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4 text-red-600">
+                <i id="feedback-icon" class="fa-solid fa-triangle-exclamation text-xl"></i>
             </div>
-            <h3 class="text-lg font-bold text-slate-900 mb-2" id="modal-title">ERROR DE VALIDACIÓN</h3>
-            <p class="text-sm text-slate-600 mb-6 whitespace-pre-line" id="modal-message">Descripción del error.</p>
-            <button type="button" onclick="closeModal()" class="px-5 py-2 bg-red-600 text-white text-sm font-bold rounded-lg hover:bg-red-700 transition">
+            <h3 class="text-lg font-bold text-slate-900 mb-2" id="modal-title">AVISO</h3>
+            <p class="text-sm text-slate-600 mb-6 whitespace-pre-line" id="modal-message">Mensaje.</p>
+            <button type="button" onclick="closeModal()" id="feedback-close-btn" class="px-6 py-2 bg-red-600 text-white text-sm font-bold rounded-lg hover:bg-red-700 transition">
                 Entendido
             </button>
+        </div>
+    </div>
+
+    <!-- MODAL CONFIGURACIÓN GOOGLE APPS SCRIPT -->
+    <div id="config-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 no-print">
+        <div class="bg-white rounded-xl shadow-2xl max-w-lg w-full p-6 border-t-4 border-cyan-600">
+            <div class="flex items-center justify-between mb-3">
+                <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                    <i class="fa-solid fa-link text-cyan-600"></i> Conectar con Google Sheets
+                </h3>
+                <button type="button" onclick="closeConfigModal()" class="text-slate-400 hover:text-slate-600">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <p class="text-xs text-slate-600 mb-3 leading-relaxed">
+                Pegue aquí la <strong>URL de la Aplicación Web</strong> obtenida al implementar el código en <em>Extensiones &gt; Apps Script</em> de su Hoja de Cálculo de Google:
+            </p>
+            <input type="url" id="gas-url-input" placeholder="https://script.google.com/macros/s/AKfycb.../exec" class="w-full px-3 py-2 text-xs font-mono border border-slate-300 rounded-lg focus:outline-none focus:border-cyan-600 mb-4">
+            <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 text-[11px] text-slate-600 mb-4">
+                <strong>Nota:</strong> También puede pegar esta URL directamente en la variable <code>GOOGLE_SCRIPT_URL</code> dentro del código HTML antes de subirlo a Google Sites para que quede fija para todos los médicos.
+            </div>
+            <div class="flex justify-end gap-2">
+                <button type="button" onclick="closeConfigModal()" class="px-4 py-2 bg-slate-200 text-slate-800 text-xs font-bold rounded-lg hover:bg-slate-300">
+                    Cancelar
+                </button>
+                <button type="button" onclick="saveScriptUrl()" class="px-4 py-2 bg-cyan-600 text-white text-xs font-bold rounded-lg hover:bg-cyan-700">
+                    Guardar Conexión
+                </button>
+            </div>
         </div>
     </div>
 
@@ -266,7 +330,7 @@
     </div>
 
     <!-- CONTENEDOR PRINCIPAL DE HOJAS -->
-    <main class="py-6 flex justify-center">
+    <main class="sheet-scroll-wrapper">
 
         <!-- ========================================================================= -->
         <!-- PESTAÑA 1: ANVERSO -->
@@ -276,11 +340,10 @@
             <table class="msp-table mb-1">
                 <thead>
                     <tr class="msp-header-bg">
-                        <th colspan="6" class="text-left text-xs uppercase px-2 py-1">A. DATOS DEL ESTABLECIMIENTO Y USUARIO / PACIENTE</th>
+                        <th colspan="6" class="text-left text-[9px] uppercase px-2 py-1">A. DATOS DEL ESTABLECIMIENTO Y USUARIO / PACIENTE</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Fila 1 Encabezados -->
                     <tr class="msp-subheader-bg text-center text-[8px]">
                         <td class="w-1/6">INSTITUCIÓN DEL SISTEMA</td>
                         <td class="w-1/12">UNICÓDIGO</td>
@@ -290,29 +353,23 @@
                         <td class="w-1/12">No. HOJA</td>
                     </tr>
                     <tr class="text-center font-bold">
-                        <!-- INSTITUCIÓN DEL SISTEMA (no editable) -->
-                        <td class="bg-slate-100 text-slate-800 text-[8px]">MINISTERIO DE SALUD PÚBLICA</td>
-                        <!-- UNICÓDIGO (no editable) -->
-                        <td class="bg-slate-100 text-slate-800 text-[8px]">000473</td>
-                        <!-- ESTABLECIMIENTO DE SALUD (no editable) -->
-                        <td class="bg-slate-100 text-slate-800 text-[8px]">HOSPITAL BÁSICO DE GUAMOTE</td>
-                        <!-- NÚMERO DE HISTORIA CLÍNICA ÚNICA: Cédula o 17 caracteres -->
+                        <td id="anverso_institucion" class="bg-slate-100 text-slate-800 text-[8px]">MINISTERIO DE SALUD PÚBLICA</td>
+                        <td id="anverso_unicodigo" class="bg-slate-100 text-slate-800 text-[8px]">000473</td>
+                        <td id="anverso_establecimiento" class="bg-slate-100 text-slate-800 text-[8px]">HOSPITAL BÁSICO DE GUAMOTE</td>
                         <td>
-                            <input type="text" id="anverso_hcu" oninput="forceUpper(this)" onblur="validateHCU(this)" class="ruled-input text-center text-xs font-bold" placeholder="Cédula (10) / 17 caract." maxlength="17">
+                            <input type="text" id="anverso_hcu" oninput="forceUpper(this); syncHeaderToReverso('hcu', this.value)" onblur="validateHCU(this)" class="ruled-input text-center text-[9px] font-bold" placeholder="Cédula (10) / 17 caract." maxlength="17">
                         </td>
-                        <!-- NÚMERO DE ARCHIVO: 6 dígitos permitiendo ceros al inicio -->
                         <td>
-                            <input type="text" id="anverso_archivo" onblur="validateArchivo(this)" class="ruled-input text-center text-xs font-bold" placeholder="000000" maxlength="6">
+                            <input type="text" id="anverso_archivo" oninput="syncHeaderToReverso('archivo', this.value)" onblur="validateArchivo(this)" class="ruled-input text-center text-[9px] font-bold" placeholder="000000" maxlength="6">
                         </td>
-                        <!-- No. HOJA: Solo numérico -->
                         <td>
-                            <input type="text" id="anverso_no_hoja" onblur="validateNumeric(this)" class="ruled-input text-center text-xs font-bold" placeholder="1" maxlength="4">
+                            <input type="text" id="anverso_no_hoja" onblur="validateNumeric(this)" class="ruled-input text-center text-[9px] font-bold" placeholder="1" maxlength="4">
                         </td>
                     </tr>
                 </tbody>
             </table>
 
-            <!-- Fila 2 Paciente (Corregido el cierre de </tr>, </tbody> y </table>) -->
+            <!-- Fila 2 Paciente -->
             <table class="msp-table mb-2">
                 <tbody>
                     <tr class="msp-subheader-bg text-center text-[8px]">
@@ -329,21 +386,16 @@
                         </td>
                     </tr>
                     <tr class="text-center">
-                        <!-- Solo una palabra permitida en Primer Apellido -->
-                        <td><input type="text" id="anverso_p_apellido" class="ruled-input text-center" oninput="enforceSingleWord(this)"></td>
+                        <td><input type="text" id="anverso_p_apellido" class="ruled-input text-center" oninput="enforceSingleWord(this); syncHeaderToReverso('p_apellido', this.value)"></td>
                         <td><input type="text" id="anverso_s_apellido" class="ruled-input text-center" oninput="forceUpper(this)"></td>
-                        <!-- Solo una palabra permitida en Primer Nombre -->
-                        <td><input type="text" id="anverso_p_nombre" class="ruled-input text-center" oninput="enforceSingleWord(this)"></td>
+                        <td><input type="text" id="anverso_p_nombre" class="ruled-input text-center" oninput="enforceSingleWord(this); syncHeaderToReverso('p_nombre', this.value)"></td>
                         <td><input type="text" id="anverso_s_nombre" class="ruled-input text-center" oninput="forceUpper(this)"></td>
-                        <!-- SEXO: M o F -->
                         <td>
                             <input type="text" id="anverso_sexo" oninput="forceUpper(this)" onblur="validateSexo(this)" class="ruled-input text-center font-bold" placeholder="M/F" maxlength="1">
                         </td>
-                        <!-- EDAD: solo numérico -->
                         <td>
-                            <input type="text" id="anverso_edad" onblur="validateNumeric(this)" class="ruled-input text-center font-bold" placeholder="0" maxlength="3">
+                            <input type="text" id="anverso_edad" oninput="syncHeaderToReverso('edad', this.value)" onblur="validateNumeric(this)" class="ruled-input text-center font-bold" placeholder="0" maxlength="3">
                         </td>
-                        <!-- CONDICIÓN EDAD: 4 casilleros H, D, M, A -->
                         <td>
                             <div class="flex justify-around items-center py-1">
                                 <label class="text-[9px] cursor-pointer flex flex-col items-center">
@@ -372,7 +424,7 @@
             <table class="msp-table">
                 <thead>
                     <tr class="msp-header-bg">
-                        <th colspan="5" class="text-left text-xs uppercase px-2 py-1">B. EVOLUCIÓN Y PRESCRIPCIONES</th>
+                        <th colspan="5" class="text-left text-[9px] uppercase px-2 py-1">B. EVOLUCIÓN Y PRESCRIPCIONES</th>
                     </tr>
                     <tr class="msp-subheader-bg text-center text-[9px]">
                         <th colspan="3" class="w-1/2 py-1">
@@ -385,32 +437,27 @@
                         </th>
                     </tr>
                     <tr class="bg-slate-100 text-[8px] text-center">
-                        <th class="w-[45px]">FECHA<br><span class="font-normal text-[8px]">(aaaa-mm-dd)</span></th>
-                        <th class="w-[30px]">HORA<br><span class="font-normal text-[8px]">(hh:mm)</span></th>
-                        <th>NOTAS DE EVOLUCIÓN</th>
-                        <th class="w-[30%]">FARMACOTERAPIA E INDICACIONES<br><span class="font-normal text-[8px]">(Para enfermería y otro profesional de salud)</span></th>
-                        <th class="w-[70px] text-[7.5px]">ADMINISTR. FÁRMACOS DISPOSITIVO</th>
+                        <th class="w-[70px]">FECHA<br><span class="font-normal text-[8px]">(aaaa-mm-dd)</span></th>
+                        <th class="w-[42px]">HORA<br><span class="font-normal text-[8px]">(hh:mm)</span></th>
+                        <th class="w-[50%]">NOTAS DE EVOLUCIÓN</th>
+                        <th class="w-[40%]">FARMACOTERAPIA E INDICACIONES<br><span class="font-normal text-[7.5px]">(Para enfermería y otro profesional de salud)</span></th>
+                        <th class="w-[0.5px] text-[7.5px] leading-tight">ADMINISTR.<br>FÁRMACOS<br>DISPOSITIVO</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <!-- Fecha editable calendario -->
                         <td class="align-top p-1">
-                            <input type="date" id="anverso_fecha" class="w-full text-[10px] font-mono border-none outline-none uppercase bg-transparent">
+                            <input type="date" id="anverso_fecha" class="w-full text-[9px] font-mono border-none outline-none uppercase bg-transparent">
                         </td>
-                        <!-- Hora editable -->
                         <td class="align-top p-1">
-                            <input type="time" id="anverso_hora" class="w-full text-[10px] font-mono border-none outline-none uppercase bg-transparent">
+                            <input type="time" id="anverso_hora" class="w-full text-[9px] font-mono border-none outline-none uppercase bg-transparent">
                         </td>
-                        <!-- Notas de Evolución -->
                         <td class="align-top p-0">
                             <textarea id="anverso_notas" class="ruled-textarea" oninput="forceUpper(this)" placeholder="Escriba la nota de evolución aquí..."></textarea>
                         </td>
-                        <!-- Prescripciones -->
                         <td class="align-top p-0">
                             <textarea id="anverso_prescripciones" class="ruled-textarea" oninput="forceUpper(this)" placeholder="Escriba las indicaciones y farmacoterapia aquí..."></textarea>
                         </td>
-                        <!-- Registro de Administración -->
                         <td class="align-top p-0">
                             <textarea id="anverso_administracion" class="ruled-textarea text-red-600 font-bold" oninput="forceUpper(this)" placeholder="Reg. rojo..."></textarea>
                         </td>
@@ -434,7 +481,7 @@
             <table class="msp-table mb-2">
                 <thead>
                     <tr class="msp-header-bg">
-                        <th colspan="5" class="text-left text-xs uppercase px-2 py-1">A. DATOS DEL USUARIO / PACIENTE</th>
+                        <th colspan="5" class="text-left text-[9px] uppercase px-2 py-1">A. DATOS DEL USUARIO / PACIENTE</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -446,16 +493,11 @@
                         <td class="w-1/6">NÚMERO DE ARCHIVO</td>
                     </tr>
                     <tr class="text-center">
-                        <!-- Solo una palabra permitida en Primer Apellido -->
                         <td><input type="text" id="reverso_p_apellido" class="ruled-input text-center" oninput="enforceSingleWord(this)"></td>
-                        <!-- Solo una palabra permitida en Primer Nombre -->
                         <td><input type="text" id="reverso_p_nombre" class="ruled-input text-center" oninput="enforceSingleWord(this)"></td>
-                        <!-- EDAD: Solo numérico -->
                         <td><input type="text" id="reverso_edad" onblur="validateNumeric(this)" class="ruled-input text-center font-bold" placeholder="0" maxlength="3"></td>
-                        <!-- HCU -->
-                        <td><input type="text" id="reverso_hcu" oninput="forceUpper(this)" onblur="validateHCU(this)" class="ruled-input text-center text-xs font-bold" placeholder="Cédula (10) / 17 caract." maxlength="17"></td>
-                        <!-- ARCHIVO -->
-                        <td><input type="text" id="reverso_archivo" onblur="validateArchivo(this)" class="ruled-input text-center text-xs font-bold" placeholder="000000" maxlength="6"></td>
+                        <td><input type="text" id="reverso_hcu" oninput="forceUpper(this)" onblur="validateHCU(this)" class="ruled-input text-center text-[9px] font-bold" placeholder="Cédula (10) / 17 caract." maxlength="17"></td>
+                        <td><input type="text" id="reverso_archivo" onblur="validateArchivo(this)" class="ruled-input text-center text-[9px] font-bold" placeholder="000000" maxlength="6"></td>
                     </tr>
                 </tbody>
             </table>
@@ -464,7 +506,7 @@
             <table class="msp-table">
                 <thead>
                     <tr class="msp-header-bg">
-                        <th colspan="5" class="text-left text-xs uppercase px-2 py-1">B. EVOLUCIÓN Y PRESCRIPCIONES</th>
+                        <th colspan="5" class="text-left text-[9px] uppercase px-2 py-1">B. EVOLUCIÓN Y PRESCRIPCIONES</th>
                     </tr>
                     <tr class="msp-subheader-bg text-center text-[9px]">
                         <th colspan="3" class="w-1/2 py-1">
@@ -477,23 +519,21 @@
                         </th>
                     </tr>
                     <tr class="bg-slate-100 text-[8px] text-center">
-                        <th class="w-[45px]">FECHA<br><span class="font-normal text-[8px]">(aaaa-mm-dd)</span></th>
-                        <th class="w-[30px]">HORA<br><span class="font-normal text-[8px]">(hh:mm)</span></th>
-                        <th>NOTAS DE EVOLUCIÓN</th>
-                        <th class="w-[30%]">FARMACOTERAPIA E INDICACIONES<br><span class="font-normal text-[8px]">(Para enfermería y otro profesional de salud)</span></th>
-                        <th class="w-[70px] text-[7.5px]">ADMINISTR. FÁRMACOS DISPOSITIVO</th>
+                        <th class="w-[70px]">FECHA<br><span class="font-normal text-[8px]">(aaaa-mm-dd)</span></th>
+                        <th class="w-[42px]">HORA<br><span class="font-normal text-[8px]">(hh:mm)</span></th>
+                        <th class="w-[50%]">NOTAS DE EVOLUCIÓN</th>
+                        <th class="w-[40%]">FARMACOTERAPIA E INDICACIONES<br><span class="font-normal text-[7.5px]">(Para enfermería y otro profesional de salud)</span></th>
+                        <th class="w-[0.5px] text-[7.5px] leading-tight">ADMINISTR.<br>FÁRMACOS<br>DISPOSITIVO</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <!-- Fecha y Hora -->
                         <td class="align-top p-1">
                             <input type="date" id="reverso_fecha" class="w-full text-[9px] font-mono border-none outline-none uppercase bg-transparent">
                         </td>
                         <td class="align-top p-1">
                             <input type="time" id="reverso_hora" class="w-full text-[9px] font-mono border-none outline-none uppercase bg-transparent">
                         </td>
-                        <!-- Textareas -->
                         <td class="align-top p-0">
                             <textarea id="reverso_notas" class="ruled-textarea" oninput="forceUpper(this)" placeholder="Escriba la nota de evolución aquí..."></textarea>
                         </td>
@@ -516,152 +556,16 @@
 
     </main>
 
-    <!-- FIREBASE FIRESTORE SYNC MULTIUSUARIO -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        // Configuración Global o Fallback
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'msp-guamote-hcu';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' 
-            ? JSON.parse(__firebase_config) 
-            : null;
-
-        let db = null;
-        let auth = null;
-        let activeUser = null;
-        let isLocalUpdate = false;
-
-        function updateSyncBadgeState(isOnline, text) {
-            const badge = document.getElementById('sync-badge');
-            const syncText = document.getElementById('sync-text');
-            if (badge && syncText) {
-                if (isOnline) {
-                    badge.className = "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs bg-emerald-950 text-emerald-400 border border-emerald-800 mr-2";
-                } else {
-                    badge.className = "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs bg-amber-950 text-amber-400 border border-amber-800 mr-2";
-                }
-                syncText.innerText = text;
-            }
-        }
-
-        if (firebaseConfig && firebaseConfig.apiKey && firebaseConfig.apiKey !== "demo") {
-            try {
-                const app = initializeApp(firebaseConfig);
-                auth = getAuth(app);
-                db = getFirestore(app);
-
-                const initAuth = async () => {
-                    try {
-                        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                            await signInWithCustomToken(auth, __initial_auth_token);
-                        } else {
-                            await signInAnonymously(auth);
-                        }
-                    } catch (authError) {
-                        console.warn("Autenticación no disponible:", authError);
-                        updateSyncBadgeState(false, "Modo Local");
-                    }
-                };
-
-                initAuth();
-
-                onAuthStateChanged(auth, (user) => {
-                    if (user) {
-                        activeUser = user;
-                        updateSyncBadgeState(true, `Sincronizado (ID: ${user.uid.slice(0,5)}...)`);
-                        listenToDocumentChanges();
-                    }
-                });
-            } catch (e) {
-                console.warn("Firestore no configurado, operando en modo local.", e);
-                updateSyncBadgeState(false, "Modo Local");
-            }
-        } else {
-            updateSyncBadgeState(false, "Modo Local");
-        }
-
-        // Ruta estricta conforme a reglas de Firestore (/artifacts/{appId}/public/data/{collectionName}/{documentId})
-        function getDocRef() {
-            if (!db) return null;
-            return doc(db, 'artifacts', appId, 'public', 'data', 'forms', 'form_hcu_005');
-        }
-
-        // Escuchar cambios en Tiempo Real
-        function listenToDocumentChanges() {
-            const docRef = getDocRef();
-            if (!docRef || !activeUser) return;
-
-            onSnapshot(docRef, (snapshot) => {
-                if (snapshot.exists() && !isLocalUpdate) {
-                    const data = snapshot.data();
-                    if (window.applyDataToForm) {
-                        window.applyDataToForm(data);
-                    }
-                }
-            }, (error) => {
-                console.warn("Aviso de sincronización en tiempo real:", error.message);
-                updateSyncBadgeState(false, "Modo Local (Sin permiso remoto)");
-            });
-        }
-
-        // Guardar automáticamente al escribir
-        window.saveDataToCloud = function() {
-            const docRef = getDocRef();
-            if (!docRef || !activeUser) return;
-            if (typeof window.collectFormData !== 'function') return;
-
-            const data = window.collectFormData();
-            isLocalUpdate = true;
-            setDoc(docRef, data, { merge: true })
-                .then(() => { isLocalUpdate = false; })
-                .catch((err) => { 
-                    isLocalUpdate = false; 
-                    console.warn("No se pudo sincronizar en la nube:", err.message);
-                    updateSyncBadgeState(false, "Modo Local");
-                });
-        };
-    </script>
-
-    <!-- LÓGICA DE INTERFACES, VALIDACIONES Y PDF -->
+    <!-- LÓGICA DE INTERFACES, VALIDACIONES, PDF Y CONEXIÓN GOOGLE SHEETS -->
     <script>
+        // =========================================================================
+        // CONFIGURACIÓN DE GOOGLE APPS SCRIPT (PEGUE SU URL AQUÍ PARA USO GLOBAL)
+        // =========================================================================
+        let GOOGLE_SCRIPT_URL = ""; 
+
         let activeTab = 'anverso';
 
-        // Recolección y aplicación de datos
-        window.collectFormData = function() {
-            const data = {};
-            const inputs = document.querySelectorAll('input[id], textarea[id]');
-            inputs.forEach(el => {
-                if (el.id) {
-                    data[el.id] = el.value || '';
-                }
-            });
-
-            const radioSelected = document.querySelector('input[name="condicion_edad_anverso"]:checked');
-            data['condicion_edad_anverso'] = radioSelected ? radioSelected.value : '';
-
-            return data;
-        };
-
-        window.applyDataToForm = function(data) {
-            if (!data) return;
-
-            Object.keys(data).forEach(key => {
-                if (key === 'condicion_edad_anverso') {
-                    const val = data[key];
-                    const radios = document.querySelectorAll('input[name="condicion_edad_anverso"]');
-                    radios.forEach(r => { r.checked = (r.value === val); });
-                } else {
-                    const el = document.getElementById(key);
-                    if (el && el.value !== data[key]) {
-                        el.value = data[key];
-                    }
-                }
-            });
-        };
-
-        // Inicializar Fecha/Hora actual por defecto
+        // Inicializar Fecha/Hora actual y estado de conexión
         window.onload = function() {
             const now = new Date();
             const year = now.getFullYear();
@@ -670,30 +574,56 @@
             const dateStr = `${year}-${month}-${day}`;
             const timeStr = now.toTimeString().split(' ')[0].substring(0, 5);
 
-            if (!document.getElementById('anverso_fecha').value) {
-                document.getElementById('anverso_fecha').value = dateStr;
-            }
-            if (!document.getElementById('anverso_hora').value) {
-                document.getElementById('anverso_hora').value = timeStr;
-            }
-            if (!document.getElementById('reverso_fecha').value) {
-                document.getElementById('reverso_fecha').value = dateStr;
-            }
-            if (!document.getElementById('reverso_hora').value) {
-                document.getElementById('reverso_hora').value = timeStr;
-            }
+            document.getElementById('anverso_fecha').value = dateStr;
+            document.getElementById('anverso_hora').value = timeStr;
+            document.getElementById('reverso_fecha').value = dateStr;
+            document.getElementById('reverso_hora').value = timeStr;
 
-            // Escuchar cambios para auto-guardado colaborativo
-            const inputs = document.querySelectorAll('input, textarea');
-            inputs.forEach(input => {
-                input.addEventListener('input', () => {
-                    if (window.saveDataToCloud) window.saveDataToCloud();
-                });
-                input.addEventListener('change', () => {
-                    if (window.saveDataToCloud) window.saveDataToCloud();
-                });
-            });
+            updateConnectionUI();
         };
+
+        function updateConnectionUI() {
+            const btn = document.getElementById('sheets-status-btn');
+            const txt = document.getElementById('sheets-status-text');
+            if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL.startsWith('https://script.google.com/')) {
+                btn.className = "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs bg-emerald-950 hover:bg-emerald-900 text-emerald-400 border border-emerald-700 transition";
+                txt.innerText = "Google Sheet Conectado";
+            } else {
+                btn.className = "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs bg-slate-800 hover:bg-slate-700 text-amber-400 border border-slate-600 transition";
+                txt.innerText = "Conectar Google Sheet";
+            }
+        }
+
+        function openConfigModal() {
+            document.getElementById('gas-url-input').value = GOOGLE_SCRIPT_URL;
+            document.getElementById('config-modal').classList.remove('hidden');
+        }
+
+        function closeConfigModal() {
+            document.getElementById('config-modal').classList.add('hidden');
+        }
+
+        function saveScriptUrl() {
+            const url = document.getElementById('gas-url-input').value.trim();
+            if (url && !url.startsWith('https://script.google.com/')) {
+                showFeedback('error', 'URL INVÁLIDA', 'La URL debe comenzar con "https://script.google.com/macros/s/..."');
+                return;
+            }
+            GOOGLE_SCRIPT_URL = url;
+            updateConnectionUI();
+            closeConfigModal();
+            if (url) {
+                showFeedback('success', 'CONEXIÓN GUARDADA', 'La hoja de cálculo de Google Sheets ha sido vinculada correctamente.');
+            }
+        }
+
+        // Sincronizar campos comunes de Anverso hacia Reverso automáticamente
+        function syncHeaderToReverso(field, value) {
+            const target = document.getElementById(`reverso_${field}`);
+            if (target) {
+                target.value = value;
+            }
+        }
 
         // Cambio de Pestañas
         function switchTab(tab) {
@@ -706,13 +636,13 @@
             if (tab === 'anverso') {
                 tabAnverso.classList.remove('hidden');
                 tabReverso.classList.add('hidden');
-                btnAnverso.className = "px-6 py-2.5 font-bold text-sm border-b-2 border-cyan-400 text-cyan-400 bg-slate-900/50 flex items-center gap-2";
-                btnReverso.className = "px-6 py-2.5 font-semibold text-sm text-slate-400 hover:text-white border-b-2 border-transparent hover:border-slate-500 flex items-center gap-2";
+                btnAnverso.className = "px-5 py-2.5 font-bold text-xs sm:text-sm border-b-2 border-cyan-400 text-cyan-400 bg-slate-900/50 flex items-center gap-2 whitespace-nowrap";
+                btnReverso.className = "px-5 py-2.5 font-semibold text-xs sm:text-sm text-slate-400 hover:text-white border-b-2 border-transparent hover:border-slate-500 flex items-center gap-2 whitespace-nowrap";
             } else {
                 tabAnverso.classList.add('hidden');
                 tabReverso.classList.remove('hidden');
-                btnReverso.className = "px-6 py-2.5 font-bold text-sm border-b-2 border-cyan-400 text-cyan-400 bg-slate-900/50 flex items-center gap-2";
-                btnAnverso.className = "px-6 py-2.5 font-semibold text-sm text-slate-400 hover:text-white border-b-2 border-transparent hover:border-slate-500 flex items-center gap-2";
+                btnReverso.className = "px-5 py-2.5 font-bold text-xs sm:text-sm border-b-2 border-cyan-400 text-cyan-400 bg-slate-900/50 flex items-center gap-2 whitespace-nowrap";
+                btnAnverso.className = "px-5 py-2.5 font-semibold text-xs sm:text-sm text-slate-400 hover:text-white border-b-2 border-transparent hover:border-slate-500 flex items-center gap-2 whitespace-nowrap";
             }
         }
 
@@ -724,10 +654,9 @@
             if (start !== null) element.setSelectionRange(start, end);
         }
 
-        // Restringir a UNA SOLA PALABRA en mayúsculas (Primer Apellido y Primer Nombre)
+        // Restringir a UNA SOLA PALABRA en mayúsculas
         function enforceSingleWord(element) {
             const start = element.selectionStart;
-            // Convertir a mayúsculas y eliminar cualquier espacio o salto de línea para garantizar 1 sola palabra
             const sanitized = element.value.toUpperCase().replace(/\s+/g, '');
             const diff = element.value.length - sanitized.length;
             element.value = sanitized;
@@ -737,17 +666,40 @@
             }
         }
 
-        // Modal de Alertas
-        function showError(msg) {
+        // Modal de Feedback unificado (Error / Éxito)
+        function showFeedback(type, title, msg) {
+            const card = document.getElementById('feedback-modal-card');
+            const iconBg = document.getElementById('feedback-icon-bg');
+            const icon = document.getElementById('feedback-icon');
+            const btn = document.getElementById('feedback-close-btn');
+
+            document.getElementById('modal-title').innerText = title;
             document.getElementById('modal-message').innerText = msg;
-            document.getElementById('error-modal').classList.remove('hidden');
+
+            if (type === 'success') {
+                card.className = "bg-white rounded-xl shadow-2xl max-w-md w-full p-6 text-center border-t-4 border-emerald-500";
+                iconBg.className = "w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4 text-emerald-600";
+                icon.className = "fa-solid fa-circle-check text-2xl";
+                btn.className = "px-6 py-2 bg-emerald-600 text-white text-sm font-bold rounded-lg hover:bg-emerald-700 transition";
+            } else {
+                card.className = "bg-white rounded-xl shadow-2xl max-w-md w-full p-6 text-center border-t-4 border-red-500";
+                iconBg.className = "w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4 text-red-600";
+                icon.className = "fa-solid fa-triangle-exclamation text-xl";
+                btn.className = "px-6 py-2 bg-red-600 text-white text-sm font-bold rounded-lg hover:bg-red-700 transition";
+            }
+
+            document.getElementById('feedback-modal').classList.remove('hidden');
+        }
+
+        function showError(msg) {
+            showFeedback('error', 'ERROR DE VALIDACIÓN', msg);
         }
 
         function closeModal() {
-            document.getElementById('error-modal').classList.add('hidden');
+            document.getElementById('feedback-modal').classList.add('hidden');
         }
 
-        // Modal de Confirmación de Limpieza (reemplaza window.confirm)
+        // Modal de Confirmación de Limpieza
         function openClearModal() {
             document.getElementById('confirm-clear-modal').classList.remove('hidden');
         }
@@ -767,7 +719,7 @@
             radios.forEach(r => r.checked = false);
 
             closeClearModal();
-            if (window.saveDataToCloud) window.saveDataToCloud();
+            showFeedback('success', 'FORMULARIO LIMPIO', 'Todos los campos del Anverso y Reverso han sido restablecidos.');
         }
 
         // VALIDACIÓN DE CÉDULA ECUATORIANA (Algoritmo Módulo 10)
@@ -797,13 +749,13 @@
             return resultado === verificador;
         }
 
-        // NÚMERO DE HISTORIA CLÍNICA ÚNICA: Cédula válida o Cadena de longitud exacta de 17 caracteres
+        // NÚMERO DE HISTORIA CLÍNICA ÚNICA
         function validateHCU(input) {
             forceUpper(input);
             const val = input.value.trim();
             if (!val) {
                 input.classList.remove('bg-red-100');
-                return;
+                return true;
             }
 
             const isValidID = validEcuadorianID(val);
@@ -812,60 +764,173 @@
             if (!isValidID && !isValidLength17) {
                 showError("NÚMERO DE HISTORIA CLÍNICA ÚNICA INVÁLIDO:\nDebe ser una Cédula de Identidad válida (10 dígitos) o una cadena de texto de exactamente 17 caracteres.");
                 input.classList.add('bg-red-100');
+                return false;
             } else {
                 input.classList.remove('bg-red-100');
+                return true;
             }
         }
 
-        // NÚMERO DE ARCHIVO: 6 dígitos permitiendo ceros a la izquierda
+        // NÚMERO DE ARCHIVO
         function validateArchivo(input) {
             const val = input.value.trim();
             if (!val) {
                 input.classList.remove('bg-red-100');
-                return;
+                return true;
             }
 
             if (!/^\d{1,6}$/.test(val)) {
                 showError("NÚMERO DE ARCHIVO INVÁLIDO: Debe ser un valor numérico de máximo 6 dígitos.");
                 input.classList.add('bg-red-100');
+                return false;
             } else {
-                input.value = val.padStart(6, '0');
+                const padded = val.padStart(6, '0');
+                input.value = padded;
+                if (input.id === 'anverso_archivo') syncHeaderToReverso('archivo', padded);
                 input.classList.remove('bg-red-100');
+                return true;
             }
         }
 
-        // No. HOJA y EDAD: Solo valores numéricos
+        // No. HOJA y EDAD
         function validateNumeric(input) {
             const val = input.value.trim();
             if (!val) {
                 input.classList.remove('bg-red-100');
-                return;
+                return true;
             }
 
             if (!/^\d+$/.test(val)) {
                 showError("CAMPO NUMÉRICO: Solo se permiten números enteros en este casillero.");
                 input.value = "";
                 input.classList.add('bg-red-100');
+                return false;
             } else {
                 input.classList.remove('bg-red-100');
+                return true;
             }
         }
 
-        // SEXO: Valor M o F exclusivamente
+        // SEXO: M o F
         function validateSexo(input) {
             forceUpper(input);
             const val = input.value.trim();
             if (!val) {
                 input.classList.remove('bg-red-100');
-                return;
+                return true;
             }
 
             if (val !== 'M' && val !== 'F') {
                 showError("SEXO INVÁLIDO: Solo se permite ingresar el carácter 'M' (Masculino) o 'F' (Femenino).");
                 input.value = "";
                 input.classList.add('bg-red-100');
+                return false;
             } else {
                 input.classList.remove('bg-red-100');
+                return true;
+            }
+        }
+
+        // =========================================================================
+        // ENVÍO DE DATOS A GOOGLE SHEETS (HOJAS ANVERSO Y REVERSO)
+        // =========================================================================
+        async function saveToGoogleSheets() {
+            if (!GOOGLE_SCRIPT_URL) {
+                openConfigModal();
+                return;
+            }
+
+            // Validar campos críticos antes de guardar
+            const hcuAnverso = document.getElementById('anverso_hcu');
+            const pApellidoAnverso = document.getElementById('anverso_p_apellido').value.trim();
+            const pNombreAnverso = document.getElementById('anverso_p_nombre').value.trim();
+
+            if (!hcuAnverso.value.trim() || !pApellidoAnverso || !pNombreAnverso) {
+                showError("DATOS INCOMPLETOS:\nDebe ingresar al menos el Número de Historia Clínica Única (HCU), Primer Apellido y Primer Nombre en el ANVERSO antes de guardar.");
+                switchTab('anverso');
+                return;
+            }
+
+            if (!validateHCU(hcuAnverso)) {
+                switchTab('anverso');
+                return;
+            }
+
+            const radioCondicion = document.querySelector('input[name="condicion_edad_anverso"]:checked');
+
+            // Construir objeto estructurado para ambas hojas
+            const payload = {
+                anverso: {
+                    institucion: "MINISTERIO DE SALUD PÚBLICA",
+                    unicodigo: "000473",
+                    establecimiento: "HOSPITAL BÁSICO DE GUAMOTE",
+                    hcu: document.getElementById('anverso_hcu').value.trim(),
+                    archivo: document.getElementById('anverso_archivo').value.trim(),
+                    no_hoja: document.getElementById('anverso_no_hoja').value.trim(),
+                    p_apellido: pApellidoAnverso,
+                    s_apellido: document.getElementById('anverso_s_apellido').value.trim(),
+                    p_nombre: pNombreAnverso,
+                    s_nombre: document.getElementById('anverso_s_nombre').value.trim(),
+                    sexo: document.getElementById('anverso_sexo').value.trim(),
+                    edad: document.getElementById('anverso_edad').value.trim(),
+                    condicion_edad: radioCondicion ? radioCondicion.value : "",
+                    fecha: document.getElementById('anverso_fecha').value,
+                    hora: document.getElementById('anverso_hora').value,
+                    notas: document.getElementById('anverso_notas').value.trim(),
+                    prescripciones: document.getElementById('anverso_prescripciones').value.trim(),
+                    administracion: document.getElementById('anverso_administracion').value.trim()
+                },
+                reverso: {
+                    p_apellido: document.getElementById('reverso_p_apellido').value.trim(),
+                    p_nombre: document.getElementById('reverso_p_nombre').value.trim(),
+                    edad: document.getElementById('reverso_edad').value.trim(),
+                    hcu: document.getElementById('reverso_hcu').value.trim(),
+                    archivo: document.getElementById('reverso_archivo').value.trim(),
+                    fecha: document.getElementById('reverso_fecha').value,
+                    hora: document.getElementById('reverso_hora').value,
+                    notas: document.getElementById('reverso_notas').value.trim(),
+                    prescripciones: document.getElementById('reverso_prescripciones').value.trim(),
+                    administracion: document.getElementById('reverso_administracion').value.trim()
+                }
+            };
+
+            const btn = document.getElementById('btn-save-sheets');
+            const originalHTML = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>Guardando...</span>`;
+
+            try {
+                // Uso de text/plain para evitar preflight CORS en iframes de Google Sites
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'text/plain;charset=utf-8'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    showFeedback('success', 'REGISTRO GUARDADO', result.message || 'Los datos de ANVERSO y REVERSO se guardaron correctamente en Google Sheets.');
+                } else {
+                    showFeedback('error', 'ERROR AL GUARDAR', result.message || 'No se pudo completar el registro en la hoja de cálculo.');
+                }
+            } catch (error) {
+                showFeedback('error', 'ERROR DE CONEXIÓN', 'No se pudo conectar con Google Sheets. Verifique que la URL de Apps Script sea correcta y esté implementada con acceso para "Cualquier persona".');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalHTML;
+            }
+        }
+
+        // Impresión segura dentro de Google Sites iframe
+        function safePrint() {
+            try {
+                window.focus();
+                window.print();
+            } catch (e) {
+                downloadPDF();
             }
         }
 
@@ -874,10 +939,11 @@
             const currentTab = activeTab;
             const targetElement = document.getElementById(`tab-${currentTab}`);
             const isAnverso = currentTab === 'anverso';
+            const hcu = document.getElementById('anverso_hcu').value.trim() || 'SIN_HCU';
 
             const opt = {
                 margin:       [0, 0, 0, 0],
-                filename:     `HCU_005_Evolucion_Prescripcion_${currentTab.toUpperCase()}.pdf`,
+                filename:     `HCU_005_${hcu}_${currentTab.toUpperCase()}.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
                 html2canvas:  { scale: 2, useCORS: true, scrollY: 0 },
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
